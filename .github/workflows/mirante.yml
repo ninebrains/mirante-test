@@ -1,0 +1,19 @@
+name: Mirante
+on:
+  pull_request:
+
+# The token GitHub gives this workflow can do ONLY what is listed here.
+permissions:
+  contents: write       # only for large scenes: commits them to the mirante-scenes branch
+  pull-requests: write  # create/update the PR comment
+
+jobs:
+  mirante:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # full history: Mirante reads BOTH commits (base and head) from git
+      - uses: ./.github/actions/mirante
+        with:
+          viewer-url: https://ninebrains.github.io/mirante-test/

@@ -1,0 +1,1837 @@
+{
+  "schemaVersion": 1,
+  "envelope": {
+    "mirante": "0.0.0",
+    "base": {
+      "ref": "main",
+      "commit": "c280010357b4d68bafcca0159945812917f244bd"
+    },
+    "head": {
+      "ref": "feat/async-email",
+      "commit": "4455bf2a99251da71981710f1e25e6c96386ec4e"
+    },
+    "configHash": "53d593f29ebbfa9b"
+  },
+  "summary": {
+    "title": "main → feat/async-email",
+    "text": "5 function(s) added, 2 changed, 1 moved. Main ideas: logic moved, async processing, separation of responsibilities, new service layer, new repository layer, new worker layer.",
+    "stats": {
+      "added": 5,
+      "removed": 0,
+      "changed": 2,
+      "moved": 1
+    }
+  },
+  "concepts": [
+    {
+      "id": "moved-logic",
+      "label": "Logic moved",
+      "description": "Code changed place without changing behavior (same normalized logic)."
+    },
+    {
+      "id": "async-processing",
+      "label": "Async processing",
+      "description": "Part of the work now happens in the background, through a queue: the client no longer waits for it."
+    },
+    {
+      "id": "separation-of-concerns",
+      "label": "Separation of responsibilities",
+      "description": "A function that mixed several responsibilities was split into layers."
+    },
+    {
+      "id": "new-service",
+      "label": "New service layer",
+      "description": "Functions with the service role were introduced."
+    },
+    {
+      "id": "new-repository",
+      "label": "New repository layer",
+      "description": "Functions with the repository role were introduced."
+    },
+    {
+      "id": "new-worker",
+      "label": "New worker layer",
+      "description": "Functions with the worker role were introduced."
+    }
+  ],
+  "levels": {
+    "arch": {
+      "nodes": [
+        {
+          "id": "component:orders",
+          "kind": "component",
+          "title": "orders",
+          "status": "changed",
+          "movedFrom": null,
+          "role": null,
+          "component": "orders",
+          "description": {
+            "before": "3 function(s): 1 domain-logic, 2 entrypoint",
+            "after": "8 function(s): 1 domain-logic, 2 entrypoint, 1 worker, 2 repository, 2 service"
+          },
+          "labels": {
+            "before": [
+              "pure-logic",
+              "entrypoint-http",
+              "data-access",
+              "email"
+            ],
+            "after": [
+              "pure-logic",
+              "entrypoint-http",
+              "queue-publish",
+              "data-access",
+              "queue-consume",
+              "email"
+            ]
+          },
+          "mixed": {
+            "before": true,
+            "after": false
+          },
+          "zoomTo": {
+            "level": "layers",
+            "target": "orders"
+          },
+          "code": {
+            "before": null,
+            "after": null
+          }
+        },
+        {
+          "id": "component:main",
+          "kind": "component",
+          "title": "main",
+          "status": "same",
+          "movedFrom": null,
+          "role": null,
+          "component": "main",
+          "description": {
+            "before": "1 function(s): 1 utility",
+            "after": "1 function(s): 1 utility"
+          },
+          "labels": {
+            "before": [
+              "pure-logic"
+            ],
+            "after": [
+              "pure-logic"
+            ]
+          },
+          "mixed": {
+            "before": false,
+            "after": false
+          },
+          "zoomTo": {
+            "level": "layers",
+            "target": "main"
+          },
+          "code": {
+            "before": null,
+            "after": null
+          }
+        },
+        {
+          "id": "infra:database",
+          "kind": "database",
+          "title": "Database",
+          "status": "changed",
+          "movedFrom": null,
+          "role": null,
+          "component": null,
+          "zoomTo": null,
+          "description": {
+            "before": "Database",
+            "after": "Database"
+          },
+          "labels": {
+            "before": [],
+            "after": []
+          },
+          "mixed": {
+            "before": false,
+            "after": false
+          },
+          "code": {
+            "before": null,
+            "after": null
+          }
+        },
+        {
+          "id": "infra:queue",
+          "kind": "queue",
+          "title": "Queue",
+          "status": "added",
+          "movedFrom": null,
+          "role": null,
+          "component": null,
+          "zoomTo": null,
+          "description": {
+            "before": null,
+            "after": "Queue"
+          },
+          "labels": {
+            "before": [],
+            "after": []
+          },
+          "mixed": {
+            "before": false,
+            "after": false
+          },
+          "code": {
+            "before": null,
+            "after": null
+          }
+        },
+        {
+          "id": "infra:email",
+          "kind": "email",
+          "title": "Email provider",
+          "status": "changed",
+          "movedFrom": null,
+          "role": null,
+          "component": null,
+          "zoomTo": null,
+          "description": {
+            "before": "Email provider",
+            "after": "Email provider"
+          },
+          "labels": {
+            "before": [],
+            "after": []
+          },
+          "mixed": {
+            "before": false,
+            "after": false
+          },
+          "code": {
+            "before": null,
+            "after": null
+          }
+        }
+      ],
+      "edges": [
+        {
+          "id": "component:orders->infra:database:sync",
+          "from": "component:orders",
+          "to": "infra:database",
+          "status": "changed",
+          "label": "4 relationship(s)",
+          "mode": "sync"
+        },
+        {
+          "id": "component:orders->infra:email:sync",
+          "from": "component:orders",
+          "to": "infra:email",
+          "status": "changed",
+          "label": "2 relationship(s)",
+          "mode": "sync"
+        },
+        {
+          "id": "component:orders->infra:queue:async",
+          "from": "component:orders",
+          "to": "infra:queue",
+          "status": "added",
+          "label": "1 relationship(s)",
+          "mode": "async"
+        },
+        {
+          "id": "infra:queue->component:orders:async",
+          "from": "infra:queue",
+          "to": "component:orders",
+          "status": "added",
+          "label": "1 relationship(s)",
+          "mode": "async"
+        }
+      ]
+    },
+    "layers": {
+      "nodes": [
+        {
+          "id": "src/orders/order.service.ts#OrderService.calculateTotal",
+          "kind": "function",
+          "title": "OrderService.calculateTotal",
+          "description": {
+            "before": "pure-logic",
+            "after": "pure-logic"
+          },
+          "status": "moved",
+          "movedFrom": "src/orders/order.controller.ts#OrderController.calculateTotal",
+          "role": {
+            "value": "domain-logic",
+            "source": "heuristic"
+          },
+          "component": "orders",
+          "labels": {
+            "before": [
+              "pure-logic"
+            ],
+            "after": [
+              "pure-logic"
+            ]
+          },
+          "mixed": {
+            "before": false,
+            "after": false
+          },
+          "zoomTo": {
+            "level": "logic",
+            "target": "src/orders/order.service.ts#OrderService.calculateTotal"
+          },
+          "code": {
+            "before": {
+              "path": "src/orders/order.controller.ts",
+              "startLine": 56,
+              "endLine": 65,
+              "code": "  private calculateTotal(items: OrderItemDto[], couponCode?: string): number {\n    let subtotal = 0;\n    for (const item of items) {\n      subtotal += item.quantity * item.unitPrice;\n    }\n    if (couponCode === 'WELCOME10') {\n      subtotal = subtotal * 0.9;\n    }\n    return Math.round(subtotal * 100) / 100;\n  }"
+            },
+            "after": {
+              "path": "src/orders/order.service.ts",
+              "startLine": 44,
+              "endLine": 51,
+              "code": "  private calculateTotal(items: OrderItemDto[], couponCode?: string): number {\n    let sum = 0;\n    for (const item of items) { sum += item.quantity * item.unitPrice; }\n    if (couponCode === 'WELCOME10') {\n      sum = sum * 0.9; // 10% discount\n    }\n    return Math.round(sum * 100) / 100;\n  }"
+            }
+          }
+        },
+        {
+          "id": "src/orders/order.controller.ts#OrderController.create",
+          "kind": "function",
+          "title": "OrderController.create",
+          "description": {
+            "before": "POST /orders · data-access · email ⚠ mixed responsibilities",
+            "after": "POST /orders · (queue-publish) · (data-access)"
+          },
+          "status": "changed",
+          "movedFrom": null,
+          "role": {
+            "value": "entrypoint",
+            "source": "heuristic"
+          },
+          "component": "orders",
+          "labels": {
+            "before": [
+              "entrypoint-http",
+              "data-access",
+              "email"
+            ],
+            "after": [
+              "entrypoint-http",
+              "queue-publish",
+              "data-access"
+            ]
+          },
+          "mixed": {
+            "before": true,
+            "after": false
+          },
+          "zoomTo": {
+            "level": "logic",
+            "target": "src/orders/order.controller.ts#OrderController.create"
+          },
+          "code": {
+            "before": {
+              "path": "src/orders/order.controller.ts",
+              "startLine": 15,
+              "endLine": 42,
+              "code": "  async create(@Body() dto: CreateOrderDto) {\n    if (dto.items.length === 0) {\n      throw new BadRequestException('Order must have at least one item');\n    }\n\n    const total = this.calculateTotal(dto.items, dto.couponCode);\n\n    const [order] = await this.dataSource.query(\n      'INSERT INTO orders (customer_email, total, status) VALUES ($1, $2, $3) RETURNING id, total, status',\n      [dto.customerEmail, total, 'created'],\n    );\n\n    for (const item of dto.items) {\n      await this.dataSource.query(\n        'INSERT INTO order_items (order_id, sku, quantity, unit_price) VALUES ($1, $2, $3, $4)',\n        [order.id, item.sku, item.quantity, item.unitPrice],\n      );\n    }\n\n    // The client waits for SMTP to answer before getting the 201.\n    await this.mailer.sendMail({\n      to: dto.customerEmail,\n      subject: `Order #${order.id} confirmed`,\n      text: `We received your order. Total: $${total.toFixed(2)}`,\n    });\n\n    return order;\n  }"
+            },
+            "after": {
+              "path": "src/orders/order.controller.ts",
+              "startLine": 10,
+              "endLine": 12,
+              "code": "  async create(@Body() dto: CreateOrderDto) {\n    return this.orderService.create(dto);\n  }"
+            }
+          }
+        },
+        {
+          "id": "src/orders/order.controller.ts#OrderController.findOne",
+          "kind": "function",
+          "title": "OrderController.findOne",
+          "description": {
+            "before": "GET /orders/:id · data-access",
+            "after": "GET /orders/:id · (data-access)"
+          },
+          "status": "changed",
+          "movedFrom": null,
+          "role": {
+            "value": "entrypoint",
+            "source": "heuristic"
+          },
+          "component": "orders",
+          "labels": {
+            "before": [
+              "entrypoint-http",
+              "data-access"
+            ],
+            "after": [
+              "entrypoint-http",
+              "data-access"
+            ]
+          },
+          "mixed": {
+            "before": false,
+            "after": false
+          },
+          "zoomTo": {
+            "level": "logic",
+            "target": "src/orders/order.controller.ts#OrderController.findOne"
+          },
+          "code": {
+            "before": {
+              "path": "src/orders/order.controller.ts",
+              "startLine": 45,
+              "endLine": 54,
+              "code": "  async findOne(@Param('id') id: string) {\n    const rows = await this.dataSource.query(\n      'SELECT id, customer_email, total, status FROM orders WHERE id = $1',\n      [id],\n    );\n    if (rows.length === 0) {\n      throw new NotFoundException(`Order ${id} not found`);\n    }\n    return rows[0];\n  }"
+            },
+            "after": {
+              "path": "src/orders/order.controller.ts",
+              "startLine": 15,
+              "endLine": 17,
+              "code": "  async findOne(@Param('id') id: string) {\n    return this.orderService.findById(id);\n  }"
+            }
+          }
+        },
+        {
+          "id": "src/orders/order-created.handler.ts#OrderCreatedHandler.process",
+          "kind": "function",
+          "title": "OrderCreatedHandler.process",
+          "description": {
+            "before": null,
+            "after": "queue-consume · email"
+          },
+          "status": "added",
+          "movedFrom": null,
+          "role": {
+            "value": "worker",
+            "source": "heuristic"
+          },
+          "component": "orders",
+          "labels": {
+            "before": [],
+            "after": [
+              "queue-consume",
+              "email"
+            ]
+          },
+          "mixed": {
+            "before": false,
+            "after": false
+          },
+          "zoomTo": {
+            "level": "logic",
+            "target": "src/orders/order-created.handler.ts#OrderCreatedHandler.process"
+          },
+          "code": {
+            "before": null,
+            "after": {
+              "path": "src/orders/order-created.handler.ts",
+              "startLine": 12,
+              "endLine": 19,
+              "code": "  async process(job: Job<OrderCreatedEvent>): Promise<void> {\n    const { orderId, customerEmail, total } = job.data;\n    await this.mailer.sendMail({\n      to: customerEmail,\n      subject: `Order #${orderId} confirmed`,\n      text: `We received your order. Total: $${total.toFixed(2)}`,\n    });\n  }"
+            }
+          }
+        },
+        {
+          "id": "src/orders/order.repository.ts#OrderRepository.findById",
+          "kind": "function",
+          "title": "OrderRepository.findById",
+          "description": {
+            "before": null,
+            "after": "data-access"
+          },
+          "status": "added",
+          "movedFrom": null,
+          "role": {
+            "value": "repository",
+            "source": "heuristic"
+          },
+          "component": "orders",
+          "labels": {
+            "before": [],
+            "after": [
+              "data-access"
+            ]
+          },
+          "mixed": {
+            "before": false,
+            "after": false
+          },
+          "zoomTo": {
+            "level": "logic",
+            "target": "src/orders/order.repository.ts#OrderRepository.findById"
+          },
+          "code": {
+            "before": null,
+            "after": {
+              "path": "src/orders/order.repository.ts",
+              "startLine": 32,
+              "endLine": 38,
+              "code": "  async findById(id: string): Promise<OrderRow | undefined> {\n    const rows = await this.dataSource.query(\n      'SELECT id, customer_email, total, status FROM orders WHERE id = $1',\n      [id],\n    );\n    return rows[0];\n  }"
+            }
+          }
+        },
+        {
+          "id": "src/orders/order.repository.ts#OrderRepository.insert",
+          "kind": "function",
+          "title": "OrderRepository.insert",
+          "description": {
+            "before": null,
+            "after": "data-access"
+          },
+          "status": "added",
+          "movedFrom": null,
+          "role": {
+            "value": "repository",
+            "source": "heuristic"
+          },
+          "component": "orders",
+          "labels": {
+            "before": [],
+            "after": [
+              "data-access"
+            ]
+          },
+          "mixed": {
+            "before": false,
+            "after": false
+          },
+          "zoomTo": {
+            "level": "logic",
+            "target": "src/orders/order.repository.ts#OrderRepository.insert"
+          },
+          "code": {
+            "before": null,
+            "after": {
+              "path": "src/orders/order.repository.ts",
+              "startLine": 16,
+              "endLine": 30,
+              "code": "  async insert(customerEmail: string, total: number, items: OrderItemDto[]): Promise<OrderRow> {\n    return this.dataSource.transaction(async (manager) => {\n      const [order] = await manager.query(\n        'INSERT INTO orders (customer_email, total, status) VALUES ($1, $2, $3) RETURNING id, customer_email, total, status',\n        [customerEmail, total, 'created'],\n      );\n      for (const item of items) {\n        await manager.query(\n          'INSERT INTO order_items (order_id, sku, quantity, unit_price) VALUES ($1, $2, $3, $4)',\n          [order.id, item.sku, item.quantity, item.unitPrice],\n        );\n      }\n      return order;\n    });\n  }"
+            }
+          }
+        },
+        {
+          "id": "src/orders/order.service.ts#OrderService.create",
+          "kind": "function",
+          "title": "OrderService.create",
+          "description": {
+            "before": null,
+            "after": "queue-publish · (data-access)"
+          },
+          "status": "added",
+          "movedFrom": null,
+          "role": {
+            "value": "service",
+            "source": "heuristic"
+          },
+          "component": "orders",
+          "labels": {
+            "before": [],
+            "after": [
+              "queue-publish",
+              "data-access"
+            ]
+          },
+          "mixed": {
+            "before": false,
+            "after": false
+          },
+          "zoomTo": {
+            "level": "logic",
+            "target": "src/orders/order.service.ts#OrderService.create"
+          },
+          "code": {
+            "before": null,
+            "after": {
+              "path": "src/orders/order.service.ts",
+              "startLine": 15,
+              "endLine": 32,
+              "code": "  async create(dto: CreateOrderDto) {\n    if (dto.items.length === 0) {\n      throw new BadRequestException('Order must have at least one item');\n    }\n\n    const total = this.calculateTotal(dto.items, dto.couponCode);\n    const order = await this.orderRepository.insert(dto.customerEmail, total, dto.items);\n\n    // The email now goes out in the background: the client does not wait for SMTP.\n    const event: OrderCreatedEvent = {\n      orderId: order.id,\n      customerEmail: dto.customerEmail,\n      total,\n    };\n    await this.ordersQueue.add(ORDER_CREATED, event);\n\n    return order;\n  }"
+            }
+          }
+        },
+        {
+          "id": "src/orders/order.service.ts#OrderService.findById",
+          "kind": "function",
+          "title": "OrderService.findById",
+          "description": {
+            "before": null,
+            "after": "(data-access)"
+          },
+          "status": "added",
+          "movedFrom": null,
+          "role": {
+            "value": "service",
+            "source": "heuristic"
+          },
+          "component": "orders",
+          "labels": {
+            "before": [],
+            "after": [
+              "data-access"
+            ]
+          },
+          "mixed": {
+            "before": false,
+            "after": false
+          },
+          "zoomTo": {
+            "level": "logic",
+            "target": "src/orders/order.service.ts#OrderService.findById"
+          },
+          "code": {
+            "before": null,
+            "after": {
+              "path": "src/orders/order.service.ts",
+              "startLine": 34,
+              "endLine": 40,
+              "code": "  async findById(id: string) {\n    const order = await this.orderRepository.findById(id);\n    if (!order) {\n      throw new NotFoundException(`Order ${id} not found`);\n    }\n    return order;\n  }"
+            }
+          }
+        },
+        {
+          "id": "src/main.ts#bootstrap",
+          "kind": "function",
+          "title": "bootstrap",
+          "description": {
+            "before": "pure-logic",
+            "after": "pure-logic"
+          },
+          "status": "same",
+          "movedFrom": null,
+          "role": {
+            "value": "utility",
+            "source": "heuristic"
+          },
+          "component": "main",
+          "labels": {
+            "before": [
+              "pure-logic"
+            ],
+            "after": [
+              "pure-logic"
+            ]
+          },
+          "mixed": {
+            "before": false,
+            "after": false
+          },
+          "zoomTo": null,
+          "code": {
+            "before": {
+              "path": "src/main.ts",
+              "startLine": 4,
+              "endLine": 7,
+              "code": "async function bootstrap() {\n  const app = await NestFactory.create(AppModule);\n  await app.listen(process.env.PORT ?? 3000);\n}"
+            },
+            "after": {
+              "path": "src/main.ts",
+              "startLine": 4,
+              "endLine": 7,
+              "code": "async function bootstrap() {\n  const app = await NestFactory.create(AppModule);\n  await app.listen(process.env.PORT ?? 3000);\n}"
+            }
+          }
+        },
+        {
+          "id": "infra:database",
+          "kind": "database",
+          "title": "Database",
+          "status": "changed",
+          "movedFrom": null,
+          "role": null,
+          "component": null,
+          "zoomTo": null,
+          "description": {
+            "before": "Database",
+            "after": "Database"
+          },
+          "labels": {
+            "before": [],
+            "after": []
+          },
+          "mixed": {
+            "before": false,
+            "after": false
+          },
+          "code": {
+            "before": null,
+            "after": null
+          }
+        },
+        {
+          "id": "infra:queue",
+          "kind": "queue",
+          "title": "Queue",
+          "status": "added",
+          "movedFrom": null,
+          "role": null,
+          "component": null,
+          "zoomTo": null,
+          "description": {
+            "before": null,
+            "after": "Queue"
+          },
+          "labels": {
+            "before": [],
+            "after": []
+          },
+          "mixed": {
+            "before": false,
+            "after": false
+          },
+          "code": {
+            "before": null,
+            "after": null
+          }
+        },
+        {
+          "id": "infra:email",
+          "kind": "email",
+          "title": "Email provider",
+          "status": "changed",
+          "movedFrom": null,
+          "role": null,
+          "component": null,
+          "zoomTo": null,
+          "description": {
+            "before": "Email provider",
+            "after": "Email provider"
+          },
+          "labels": {
+            "before": [],
+            "after": []
+          },
+          "mixed": {
+            "before": false,
+            "after": false
+          },
+          "code": {
+            "before": null,
+            "after": null
+          }
+        }
+      ],
+      "edges": [
+        {
+          "id": "infra:queue->src/orders/order-created.handler.ts#OrderCreatedHandler.process",
+          "from": "infra:queue",
+          "to": "src/orders/order-created.handler.ts#OrderCreatedHandler.process",
+          "status": "added",
+          "label": "delivers",
+          "mode": "async"
+        },
+        {
+          "id": "src/orders/order-created.handler.ts#OrderCreatedHandler.process->infra:email",
+          "from": "src/orders/order-created.handler.ts#OrderCreatedHandler.process",
+          "to": "infra:email",
+          "status": "added",
+          "label": "MailerService.sendMail",
+          "mode": "sync"
+        },
+        {
+          "id": "src/orders/order.controller.ts#OrderController.create->infra:database",
+          "from": "src/orders/order.controller.ts#OrderController.create",
+          "to": "infra:database",
+          "status": "removed",
+          "label": "DataSource.query",
+          "mode": "sync"
+        },
+        {
+          "id": "src/orders/order.controller.ts#OrderController.create->infra:email",
+          "from": "src/orders/order.controller.ts#OrderController.create",
+          "to": "infra:email",
+          "status": "removed",
+          "label": "MailerService.sendMail",
+          "mode": "sync"
+        },
+        {
+          "id": "src/orders/order.controller.ts#OrderController.create->src/orders/order.service.ts#OrderService.calculateTotal",
+          "from": "src/orders/order.controller.ts#OrderController.create",
+          "to": "src/orders/order.service.ts#OrderService.calculateTotal",
+          "status": "removed",
+          "label": "calls",
+          "mode": "sync"
+        },
+        {
+          "id": "src/orders/order.controller.ts#OrderController.create->src/orders/order.service.ts#OrderService.create",
+          "from": "src/orders/order.controller.ts#OrderController.create",
+          "to": "src/orders/order.service.ts#OrderService.create",
+          "status": "added",
+          "label": "calls",
+          "mode": "sync"
+        },
+        {
+          "id": "src/orders/order.controller.ts#OrderController.findOne->infra:database",
+          "from": "src/orders/order.controller.ts#OrderController.findOne",
+          "to": "infra:database",
+          "status": "removed",
+          "label": "DataSource.query",
+          "mode": "sync"
+        },
+        {
+          "id": "src/orders/order.controller.ts#OrderController.findOne->src/orders/order.service.ts#OrderService.findById",
+          "from": "src/orders/order.controller.ts#OrderController.findOne",
+          "to": "src/orders/order.service.ts#OrderService.findById",
+          "status": "added",
+          "label": "calls",
+          "mode": "sync"
+        },
+        {
+          "id": "src/orders/order.repository.ts#OrderRepository.findById->infra:database",
+          "from": "src/orders/order.repository.ts#OrderRepository.findById",
+          "to": "infra:database",
+          "status": "added",
+          "label": "DataSource.query",
+          "mode": "sync"
+        },
+        {
+          "id": "src/orders/order.repository.ts#OrderRepository.insert->infra:database",
+          "from": "src/orders/order.repository.ts#OrderRepository.insert",
+          "to": "infra:database",
+          "status": "added",
+          "label": "DataSource.transaction",
+          "mode": "sync"
+        },
+        {
+          "id": "src/orders/order.service.ts#OrderService.create->infra:queue",
+          "from": "src/orders/order.service.ts#OrderService.create",
+          "to": "infra:queue",
+          "status": "added",
+          "label": "Queue.add",
+          "mode": "async"
+        },
+        {
+          "id": "src/orders/order.service.ts#OrderService.create->src/orders/order.repository.ts#OrderRepository.insert",
+          "from": "src/orders/order.service.ts#OrderService.create",
+          "to": "src/orders/order.repository.ts#OrderRepository.insert",
+          "status": "added",
+          "label": "calls",
+          "mode": "sync"
+        },
+        {
+          "id": "src/orders/order.service.ts#OrderService.create->src/orders/order.service.ts#OrderService.calculateTotal",
+          "from": "src/orders/order.service.ts#OrderService.create",
+          "to": "src/orders/order.service.ts#OrderService.calculateTotal",
+          "status": "added",
+          "label": "calls",
+          "mode": "sync"
+        },
+        {
+          "id": "src/orders/order.service.ts#OrderService.findById->src/orders/order.repository.ts#OrderRepository.findById",
+          "from": "src/orders/order.service.ts#OrderService.findById",
+          "to": "src/orders/order.repository.ts#OrderRepository.findById",
+          "status": "added",
+          "label": "calls",
+          "mode": "sync"
+        }
+      ]
+    },
+    "logic": [
+      {
+        "node": "src/orders/order.service.ts#OrderService.calculateTotal",
+        "title": "OrderService.calculateTotal",
+        "status": "moved",
+        "blocks": [
+          {
+            "kind": "entry",
+            "label": "(items: OrderItemDto[], couponCode?: string)",
+            "startLine": 44,
+            "endLine": 44,
+            "key": "076509659ded",
+            "calls": [],
+            "children": [],
+            "branches": [],
+            "status": "same"
+          },
+          {
+            "kind": "assignment",
+            "label": "sum = 0",
+            "startLine": 45,
+            "endLine": 45,
+            "key": "d58a385322b5",
+            "calls": [],
+            "children": [],
+            "branches": [],
+            "status": "same"
+          },
+          {
+            "kind": "loop",
+            "label": "for each item of items",
+            "startLine": 46,
+            "endLine": 46,
+            "key": "f82eddbed943",
+            "calls": [],
+            "children": [
+              {
+                "kind": "assignment",
+                "label": "sum += item.quantity * item.unitPrice",
+                "startLine": 46,
+                "endLine": 46,
+                "key": "7064fb1e6619",
+                "calls": [],
+                "children": [],
+                "branches": [],
+                "status": "same"
+              }
+            ],
+            "branches": [],
+            "status": "same"
+          },
+          {
+            "kind": "condition",
+            "label": "if couponCode === 'WELCOME10'",
+            "startLine": 47,
+            "endLine": 49,
+            "key": "5cda7f704f0f",
+            "calls": [],
+            "children": [],
+            "branches": [
+              {
+                "label": "then",
+                "blocks": [
+                  {
+                    "kind": "assignment",
+                    "label": "sum = sum * 0.9",
+                    "startLine": 48,
+                    "endLine": 48,
+                    "key": "b4ac805029e1",
+                    "calls": [],
+                    "children": [],
+                    "branches": [],
+                    "status": "same"
+                  }
+                ]
+              }
+            ],
+            "status": "same"
+          },
+          {
+            "kind": "return",
+            "label": "return Math.round(sum * 100) / 100",
+            "startLine": 50,
+            "endLine": 50,
+            "key": "90598f27730e",
+            "calls": [
+              {
+                "text": "Math.round",
+                "line": 50,
+                "awaited": false,
+                "target": null,
+                "module": "(global)",
+                "capability": null
+              }
+            ],
+            "children": [],
+            "branches": [],
+            "status": "same"
+          }
+        ]
+      },
+      {
+        "node": "src/orders/order.controller.ts#OrderController.create",
+        "title": "OrderController.create",
+        "status": "changed",
+        "blocks": [
+          {
+            "kind": "entry",
+            "label": "POST /orders · (dto: CreateOrderDto)",
+            "startLine": 10,
+            "endLine": 10,
+            "key": "702432845f0d",
+            "calls": [],
+            "children": [],
+            "branches": [],
+            "status": "same"
+          },
+          {
+            "kind": "condition",
+            "label": "if dto.items.length === 0",
+            "startLine": 16,
+            "endLine": 18,
+            "key": "9e05f32e19e7",
+            "calls": [],
+            "children": [],
+            "branches": [
+              {
+                "label": "then",
+                "blocks": [
+                  {
+                    "kind": "error",
+                    "label": "throw new BadRequestException('Order must have at least one item')",
+                    "startLine": 17,
+                    "endLine": 17,
+                    "key": "cdba8b4c1d69",
+                    "calls": [
+                      {
+                        "text": "new BadRequestException",
+                        "line": 17,
+                        "awaited": false,
+                        "target": null,
+                        "module": "@nestjs/common",
+                        "capability": null
+                      }
+                    ],
+                    "children": [],
+                    "branches": [],
+                    "status": "removed"
+                  }
+                ]
+              }
+            ],
+            "status": "removed"
+          },
+          {
+            "kind": "assignment",
+            "label": "total = this.calculateTotal(dto.items, dto.couponCode)",
+            "startLine": 20,
+            "endLine": 20,
+            "key": "0bd8c8a3ad6b",
+            "calls": [
+              {
+                "text": "this.calculateTotal",
+                "line": 20,
+                "awaited": false,
+                "target": "src/orders/order.controller.ts#OrderController.calculateTotal",
+                "module": null,
+                "capability": null
+              }
+            ],
+            "children": [],
+            "branches": [],
+            "status": "removed"
+          },
+          {
+            "kind": "assignment",
+            "label": "[order] = await this.dataSource.query( 'INSERT INTO orders (customer_email, tot…",
+            "startLine": 22,
+            "endLine": 25,
+            "key": "8fb9e61e128b",
+            "calls": [
+              {
+                "text": "this.dataSource.query",
+                "line": 22,
+                "awaited": true,
+                "target": null,
+                "module": "typeorm",
+                "capability": "data-access"
+              }
+            ],
+            "children": [],
+            "branches": [],
+            "status": "removed"
+          },
+          {
+            "kind": "loop",
+            "label": "for each item of dto.items",
+            "startLine": 27,
+            "endLine": 32,
+            "key": "9f3831065625",
+            "calls": [],
+            "children": [
+              {
+                "kind": "call",
+                "label": "await this.dataSource.query( 'INSERT INTO order_items (order_id, sku, quantity,…",
+                "startLine": 28,
+                "endLine": 31,
+                "key": "9db023ec63b7",
+                "calls": [
+                  {
+                    "text": "this.dataSource.query",
+                    "line": 28,
+                    "awaited": true,
+                    "target": null,
+                    "module": "typeorm",
+                    "capability": "data-access"
+                  }
+                ],
+                "children": [],
+                "branches": [],
+                "status": "removed"
+              }
+            ],
+            "branches": [],
+            "status": "removed"
+          },
+          {
+            "kind": "call",
+            "label": "await this.mailer.sendMail({ to: dto.customerEmail, subject: `Order #${order.id…",
+            "startLine": 35,
+            "endLine": 39,
+            "key": "df66f6385cb8",
+            "calls": [
+              {
+                "text": "this.mailer.sendMail",
+                "line": 35,
+                "awaited": true,
+                "target": null,
+                "module": "@nestjs-modules/mailer",
+                "capability": "email"
+              },
+              {
+                "text": "total.toFixed",
+                "line": 38,
+                "awaited": false,
+                "target": null,
+                "module": null,
+                "capability": null
+              }
+            ],
+            "children": [],
+            "branches": [],
+            "status": "removed"
+          },
+          {
+            "kind": "return",
+            "label": "return this.orderService.create(dto)",
+            "startLine": 11,
+            "endLine": 11,
+            "key": "63544cea85a8",
+            "calls": [
+              {
+                "text": "this.orderService.create",
+                "line": 11,
+                "awaited": false,
+                "target": "src/orders/order.service.ts#OrderService.create",
+                "module": null,
+                "capability": null
+              }
+            ],
+            "children": [],
+            "branches": [],
+            "status": "changed",
+            "before": "return order"
+          }
+        ]
+      },
+      {
+        "node": "src/orders/order.controller.ts#OrderController.findOne",
+        "title": "OrderController.findOne",
+        "status": "changed",
+        "blocks": [
+          {
+            "kind": "entry",
+            "label": "GET /orders/:id · (id: string)",
+            "startLine": 15,
+            "endLine": 15,
+            "key": "8cc7f9a6d43c",
+            "calls": [],
+            "children": [],
+            "branches": [],
+            "status": "same"
+          },
+          {
+            "kind": "assignment",
+            "label": "rows = await this.dataSource.query( 'SELECT id, customer_email, total, status F…",
+            "startLine": 46,
+            "endLine": 49,
+            "key": "fe2216cff8f5",
+            "calls": [
+              {
+                "text": "this.dataSource.query",
+                "line": 46,
+                "awaited": true,
+                "target": null,
+                "module": "typeorm",
+                "capability": "data-access"
+              }
+            ],
+            "children": [],
+            "branches": [],
+            "status": "removed"
+          },
+          {
+            "kind": "condition",
+            "label": "if rows.length === 0",
+            "startLine": 50,
+            "endLine": 52,
+            "key": "547fe0f0cab1",
+            "calls": [],
+            "children": [],
+            "branches": [
+              {
+                "label": "then",
+                "blocks": [
+                  {
+                    "kind": "error",
+                    "label": "throw new NotFoundException(`Order ${id} not found`)",
+                    "startLine": 51,
+                    "endLine": 51,
+                    "key": "1b5797c43daf",
+                    "calls": [
+                      {
+                        "text": "new NotFoundException",
+                        "line": 51,
+                        "awaited": false,
+                        "target": null,
+                        "module": "@nestjs/common",
+                        "capability": null
+                      }
+                    ],
+                    "children": [],
+                    "branches": [],
+                    "status": "removed"
+                  }
+                ]
+              }
+            ],
+            "status": "removed"
+          },
+          {
+            "kind": "return",
+            "label": "return this.orderService.findById(id)",
+            "startLine": 16,
+            "endLine": 16,
+            "key": "f9daa5d6832c",
+            "calls": [
+              {
+                "text": "this.orderService.findById",
+                "line": 16,
+                "awaited": false,
+                "target": "src/orders/order.service.ts#OrderService.findById",
+                "module": null,
+                "capability": null
+              }
+            ],
+            "children": [],
+            "branches": [],
+            "status": "changed",
+            "before": "return rows[0]"
+          }
+        ]
+      },
+      {
+        "node": "src/orders/order-created.handler.ts#OrderCreatedHandler.process",
+        "title": "OrderCreatedHandler.process",
+        "status": "added",
+        "blocks": [
+          {
+            "kind": "entry",
+            "label": "queue-consume · (job: Job<OrderCreatedEvent>)",
+            "startLine": 12,
+            "endLine": 12,
+            "key": "1f76797cf2f0",
+            "calls": [],
+            "children": [],
+            "branches": [],
+            "status": "added"
+          },
+          {
+            "kind": "assignment",
+            "label": "{ orderId, customerEmail, total } = job.data",
+            "startLine": 13,
+            "endLine": 13,
+            "key": "7b186ceb4794",
+            "calls": [],
+            "children": [],
+            "branches": [],
+            "status": "added"
+          },
+          {
+            "kind": "call",
+            "label": "await this.mailer.sendMail({ to: customerEmail, subject: `Order #${orderId} con…",
+            "startLine": 14,
+            "endLine": 18,
+            "key": "6641893be2d1",
+            "calls": [
+              {
+                "text": "this.mailer.sendMail",
+                "line": 14,
+                "awaited": true,
+                "target": null,
+                "module": "@nestjs-modules/mailer",
+                "capability": "email"
+              },
+              {
+                "text": "total.toFixed",
+                "line": 17,
+                "awaited": false,
+                "target": null,
+                "module": null,
+                "capability": null
+              }
+            ],
+            "children": [],
+            "branches": [],
+            "status": "added"
+          }
+        ]
+      },
+      {
+        "node": "src/orders/order.repository.ts#OrderRepository.findById",
+        "title": "OrderRepository.findById",
+        "status": "added",
+        "blocks": [
+          {
+            "kind": "entry",
+            "label": "(id: string)",
+            "startLine": 32,
+            "endLine": 32,
+            "key": "8e81a5cb86b5",
+            "calls": [],
+            "children": [],
+            "branches": [],
+            "status": "added"
+          },
+          {
+            "kind": "assignment",
+            "label": "rows = await this.dataSource.query( 'SELECT id, customer_email, total, status F…",
+            "startLine": 33,
+            "endLine": 36,
+            "key": "fe2216cff8f5",
+            "calls": [
+              {
+                "text": "this.dataSource.query",
+                "line": 33,
+                "awaited": true,
+                "target": null,
+                "module": "typeorm",
+                "capability": "data-access"
+              }
+            ],
+            "children": [],
+            "branches": [],
+            "status": "added"
+          },
+          {
+            "kind": "return",
+            "label": "return rows[0]",
+            "startLine": 37,
+            "endLine": 37,
+            "key": "d787dd53ea4e",
+            "calls": [],
+            "children": [],
+            "branches": [],
+            "status": "added"
+          }
+        ]
+      },
+      {
+        "node": "src/orders/order.repository.ts#OrderRepository.insert",
+        "title": "OrderRepository.insert",
+        "status": "added",
+        "blocks": [
+          {
+            "kind": "entry",
+            "label": "(customerEmail: string, total: number, items: OrderItemDto[])",
+            "startLine": 16,
+            "endLine": 16,
+            "key": "7a6768b5843a",
+            "calls": [],
+            "children": [],
+            "branches": [],
+            "status": "added"
+          },
+          {
+            "kind": "return",
+            "label": "return this.dataSource.transaction(async (manager) => { const [order] = await manager.…",
+            "startLine": 17,
+            "endLine": 29,
+            "key": "3ffabed7efac",
+            "calls": [
+              {
+                "text": "this.dataSource.transaction",
+                "line": 17,
+                "awaited": false,
+                "target": null,
+                "module": "typeorm",
+                "capability": "data-access"
+              }
+            ],
+            "children": [
+              {
+                "kind": "assignment",
+                "label": "[order] = await manager.query( 'INSERT INTO orders (customer_email, total, stat…",
+                "startLine": 18,
+                "endLine": 21,
+                "key": "592a9ef7773e",
+                "calls": [
+                  {
+                    "text": "manager.query",
+                    "line": 18,
+                    "awaited": true,
+                    "target": null,
+                    "module": null,
+                    "capability": null
+                  }
+                ],
+                "children": [],
+                "branches": [],
+                "status": "added"
+              },
+              {
+                "kind": "loop",
+                "label": "for each item of items",
+                "startLine": 22,
+                "endLine": 27,
+                "key": "50e274d28bba",
+                "calls": [],
+                "children": [
+                  {
+                    "kind": "call",
+                    "label": "await manager.query( 'INSERT INTO order_items (order_id, sku, quantity, unit_pr…",
+                    "startLine": 23,
+                    "endLine": 26,
+                    "key": "39dac3145a61",
+                    "calls": [
+                      {
+                        "text": "manager.query",
+                        "line": 23,
+                        "awaited": true,
+                        "target": null,
+                        "module": null,
+                        "capability": null
+                      }
+                    ],
+                    "children": [],
+                    "branches": [],
+                    "status": "added"
+                  }
+                ],
+                "branches": [],
+                "status": "added"
+              },
+              {
+                "kind": "return",
+                "label": "return order",
+                "startLine": 28,
+                "endLine": 28,
+                "key": "8b1fe97de967",
+                "calls": [],
+                "children": [],
+                "branches": [],
+                "status": "added"
+              }
+            ],
+            "branches": [],
+            "status": "added"
+          }
+        ]
+      },
+      {
+        "node": "src/orders/order.service.ts#OrderService.create",
+        "title": "OrderService.create",
+        "status": "added",
+        "blocks": [
+          {
+            "kind": "entry",
+            "label": "(dto: CreateOrderDto)",
+            "startLine": 15,
+            "endLine": 15,
+            "key": "71cf9635cbd6",
+            "calls": [],
+            "children": [],
+            "branches": [],
+            "status": "added"
+          },
+          {
+            "kind": "condition",
+            "label": "if dto.items.length === 0",
+            "startLine": 16,
+            "endLine": 18,
+            "key": "9e05f32e19e7",
+            "calls": [],
+            "children": [],
+            "branches": [
+              {
+                "label": "then",
+                "blocks": [
+                  {
+                    "kind": "error",
+                    "label": "throw new BadRequestException('Order must have at least one item')",
+                    "startLine": 17,
+                    "endLine": 17,
+                    "key": "cdba8b4c1d69",
+                    "calls": [
+                      {
+                        "text": "new BadRequestException",
+                        "line": 17,
+                        "awaited": false,
+                        "target": null,
+                        "module": "@nestjs/common",
+                        "capability": null
+                      }
+                    ],
+                    "children": [],
+                    "branches": [],
+                    "status": "added"
+                  }
+                ]
+              }
+            ],
+            "status": "added"
+          },
+          {
+            "kind": "assignment",
+            "label": "total = this.calculateTotal(dto.items, dto.couponCode)",
+            "startLine": 20,
+            "endLine": 20,
+            "key": "0bd8c8a3ad6b",
+            "calls": [
+              {
+                "text": "this.calculateTotal",
+                "line": 20,
+                "awaited": false,
+                "target": "src/orders/order.service.ts#OrderService.calculateTotal",
+                "module": null,
+                "capability": null
+              }
+            ],
+            "children": [],
+            "branches": [],
+            "status": "added"
+          },
+          {
+            "kind": "assignment",
+            "label": "order = await this.orderRepository.insert(dto.customerEmail, total, dto.items)",
+            "startLine": 21,
+            "endLine": 21,
+            "key": "6a6b6387093a",
+            "calls": [
+              {
+                "text": "this.orderRepository.insert",
+                "line": 21,
+                "awaited": true,
+                "target": "src/orders/order.repository.ts#OrderRepository.insert",
+                "module": null,
+                "capability": null
+              }
+            ],
+            "children": [],
+            "branches": [],
+            "status": "added"
+          },
+          {
+            "kind": "assignment",
+            "label": "event = { orderId: order.id, customerEmail: dto.customerEmail, total, }",
+            "startLine": 24,
+            "endLine": 28,
+            "key": "9e598de78985",
+            "calls": [],
+            "children": [],
+            "branches": [],
+            "status": "added"
+          },
+          {
+            "kind": "event",
+            "label": "await this.ordersQueue.add(ORDER_CREATED, event)",
+            "startLine": 29,
+            "endLine": 29,
+            "key": "6136c22f28f6",
+            "calls": [
+              {
+                "text": "this.ordersQueue.add",
+                "line": 29,
+                "awaited": true,
+                "target": null,
+                "module": "bullmq",
+                "capability": "queue-publish"
+              }
+            ],
+            "children": [],
+            "branches": [],
+            "status": "added"
+          },
+          {
+            "kind": "return",
+            "label": "return order",
+            "startLine": 31,
+            "endLine": 31,
+            "key": "9045bc531fd9",
+            "calls": [],
+            "children": [],
+            "branches": [],
+            "status": "added"
+          }
+        ]
+      },
+      {
+        "node": "src/orders/order.service.ts#OrderService.findById",
+        "title": "OrderService.findById",
+        "status": "added",
+        "blocks": [
+          {
+            "kind": "entry",
+            "label": "(id: string)",
+            "startLine": 34,
+            "endLine": 34,
+            "key": "8e81a5cb86b5",
+            "calls": [],
+            "children": [],
+            "branches": [],
+            "status": "added"
+          },
+          {
+            "kind": "assignment",
+            "label": "order = await this.orderRepository.findById(id)",
+            "startLine": 35,
+            "endLine": 35,
+            "key": "d267df6539e3",
+            "calls": [
+              {
+                "text": "this.orderRepository.findById",
+                "line": 35,
+                "awaited": true,
+                "target": "src/orders/order.repository.ts#OrderRepository.findById",
+                "module": null,
+                "capability": null
+              }
+            ],
+            "children": [],
+            "branches": [],
+            "status": "added"
+          },
+          {
+            "kind": "condition",
+            "label": "if !order",
+            "startLine": 36,
+            "endLine": 38,
+            "key": "9866807d3959",
+            "calls": [],
+            "children": [],
+            "branches": [
+              {
+                "label": "then",
+                "blocks": [
+                  {
+                    "kind": "error",
+                    "label": "throw new NotFoundException(`Order ${id} not found`)",
+                    "startLine": 37,
+                    "endLine": 37,
+                    "key": "1b5797c43daf",
+                    "calls": [
+                      {
+                        "text": "new NotFoundException",
+                        "line": 37,
+                        "awaited": false,
+                        "target": null,
+                        "module": "@nestjs/common",
+                        "capability": null
+                      }
+                    ],
+                    "children": [],
+                    "branches": [],
+                    "status": "added"
+                  }
+                ]
+              }
+            ],
+            "status": "added"
+          },
+          {
+            "kind": "return",
+            "label": "return order",
+            "startLine": 39,
+            "endLine": 39,
+            "key": "ccc5ccf7e93c",
+            "calls": [],
+            "children": [],
+            "branches": [],
+            "status": "added"
+          }
+        ]
+      }
+    ]
+  },
+  "flows": [
+    {
+      "id": "before:src/orders/order.controller.ts#OrderController.create",
+      "side": "before",
+      "title": "POST /orders",
+      "entry": "src/orders/order.controller.ts#OrderController.create",
+      "timing": "simulated",
+      "responseMs": 292,
+      "totalMs": 292,
+      "steps": [
+        {
+          "from": "src/orders/order.controller.ts#OrderController.create",
+          "to": "src/orders/order.service.ts#OrderService.calculateTotal",
+          "edge": "src/orders/order.controller.ts#OrderController.create->src/orders/order.service.ts#OrderService.calculateTotal",
+          "lane": "main",
+          "startMs": 0,
+          "durationMs": 2,
+          "label": "OrderService.calculateTotal"
+        },
+        {
+          "from": "src/orders/order.controller.ts#OrderController.create",
+          "to": "infra:database",
+          "edge": "src/orders/order.controller.ts#OrderController.create->infra:database",
+          "lane": "main",
+          "startMs": 2,
+          "durationMs": 20,
+          "label": "DataSource.query"
+        },
+        {
+          "from": "src/orders/order.controller.ts#OrderController.create",
+          "to": "infra:database",
+          "edge": "src/orders/order.controller.ts#OrderController.create->infra:database",
+          "lane": "main",
+          "startMs": 22,
+          "durationMs": 20,
+          "label": "DataSource.query"
+        },
+        {
+          "from": "src/orders/order.controller.ts#OrderController.create",
+          "to": "infra:email",
+          "edge": "src/orders/order.controller.ts#OrderController.create->infra:email",
+          "lane": "main",
+          "startMs": 42,
+          "durationMs": 250,
+          "label": "MailerService.sendMail"
+        }
+      ]
+    },
+    {
+      "id": "before:src/orders/order.controller.ts#OrderController.findOne",
+      "side": "before",
+      "title": "GET /orders/:id",
+      "entry": "src/orders/order.controller.ts#OrderController.findOne",
+      "timing": "simulated",
+      "responseMs": 20,
+      "totalMs": 20,
+      "steps": [
+        {
+          "from": "src/orders/order.controller.ts#OrderController.findOne",
+          "to": "infra:database",
+          "edge": "src/orders/order.controller.ts#OrderController.findOne->infra:database",
+          "lane": "main",
+          "startMs": 0,
+          "durationMs": 20,
+          "label": "DataSource.query"
+        }
+      ]
+    },
+    {
+      "id": "after:src/orders/order.controller.ts#OrderController.create",
+      "side": "after",
+      "title": "POST /orders",
+      "entry": "src/orders/order.controller.ts#OrderController.create",
+      "timing": "simulated",
+      "responseMs": 29,
+      "totalMs": 331,
+      "steps": [
+        {
+          "from": "src/orders/order.controller.ts#OrderController.create",
+          "to": "src/orders/order.service.ts#OrderService.create",
+          "edge": "src/orders/order.controller.ts#OrderController.create->src/orders/order.service.ts#OrderService.create",
+          "lane": "main",
+          "startMs": 0,
+          "durationMs": 2,
+          "label": "OrderService.create"
+        },
+        {
+          "from": "src/orders/order.service.ts#OrderService.create",
+          "to": "src/orders/order.service.ts#OrderService.calculateTotal",
+          "edge": "src/orders/order.service.ts#OrderService.create->src/orders/order.service.ts#OrderService.calculateTotal",
+          "lane": "main",
+          "startMs": 2,
+          "durationMs": 2,
+          "label": "OrderService.calculateTotal"
+        },
+        {
+          "from": "src/orders/order.service.ts#OrderService.create",
+          "to": "src/orders/order.repository.ts#OrderRepository.insert",
+          "edge": "src/orders/order.service.ts#OrderService.create->src/orders/order.repository.ts#OrderRepository.insert",
+          "lane": "main",
+          "startMs": 4,
+          "durationMs": 2,
+          "label": "OrderRepository.insert"
+        },
+        {
+          "from": "src/orders/order.repository.ts#OrderRepository.insert",
+          "to": "infra:database",
+          "edge": "src/orders/order.repository.ts#OrderRepository.insert->infra:database",
+          "lane": "main",
+          "startMs": 6,
+          "durationMs": 20,
+          "label": "DataSource.transaction"
+        },
+        {
+          "from": "src/orders/order.service.ts#OrderService.create",
+          "to": "infra:queue",
+          "edge": "src/orders/order.service.ts#OrderService.create->infra:queue",
+          "lane": "main",
+          "startMs": 26,
+          "durationMs": 3,
+          "label": "Queue.add"
+        },
+        {
+          "from": "infra:queue",
+          "to": "src/orders/order-created.handler.ts#OrderCreatedHandler.process",
+          "edge": "infra:queue->src/orders/order-created.handler.ts#OrderCreatedHandler.process",
+          "lane": "background",
+          "startMs": 79,
+          "durationMs": 2,
+          "label": "OrderCreatedHandler.process"
+        },
+        {
+          "from": "src/orders/order-created.handler.ts#OrderCreatedHandler.process",
+          "to": "infra:email",
+          "edge": "src/orders/order-created.handler.ts#OrderCreatedHandler.process->infra:email",
+          "lane": "background",
+          "startMs": 81,
+          "durationMs": 250,
+          "label": "MailerService.sendMail"
+        }
+      ]
+    },
+    {
+      "id": "after:src/orders/order.controller.ts#OrderController.findOne",
+      "side": "after",
+      "title": "GET /orders/:id",
+      "entry": "src/orders/order.controller.ts#OrderController.findOne",
+      "timing": "simulated",
+      "responseMs": 24,
+      "totalMs": 24,
+      "steps": [
+        {
+          "from": "src/orders/order.controller.ts#OrderController.findOne",
+          "to": "src/orders/order.service.ts#OrderService.findById",
+          "edge": "src/orders/order.controller.ts#OrderController.findOne->src/orders/order.service.ts#OrderService.findById",
+          "lane": "main",
+          "startMs": 0,
+          "durationMs": 2,
+          "label": "OrderService.findById"
+        },
+        {
+          "from": "src/orders/order.service.ts#OrderService.findById",
+          "to": "src/orders/order.repository.ts#OrderRepository.findById",
+          "edge": "src/orders/order.service.ts#OrderService.findById->src/orders/order.repository.ts#OrderRepository.findById",
+          "lane": "main",
+          "startMs": 2,
+          "durationMs": 2,
+          "label": "OrderRepository.findById"
+        },
+        {
+          "from": "src/orders/order.repository.ts#OrderRepository.findById",
+          "to": "infra:database",
+          "edge": "src/orders/order.repository.ts#OrderRepository.findById->infra:database",
+          "lane": "main",
+          "startMs": 4,
+          "durationMs": 20,
+          "label": "DataSource.query"
+        }
+      ]
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "level": "layers",
+      "target": "src/orders/order.service.ts#OrderService.calculateTotal",
+      "question": "OrderService.calculateTotal moved from OrderController.calculateTotal with identical logic. Do its tests still cover it in the new place?"
+    },
+    {
+      "level": "arch",
+      "target": "infra:queue",
+      "question": "Work now goes through a queue to OrderCreatedHandler.process. What happens if the consumer fails — is it retried, and is there a dead-letter queue?"
+    },
+    {
+      "level": "layers",
+      "target": "src/orders/order.controller.ts#OrderController.create",
+      "question": "OrderController.create no longer mixes responsibilities. Is the observable behavior the same (status codes, errors, response body)?"
+    },
+    {
+      "level": "arch",
+      "target": "src/orders/order.controller.ts#OrderController.create",
+      "question": "POST /orders: the simulated response time went from ~292 ms to ~29 ms because work left the request path. Does the client still get everything it needs in the response?"
+    }
+  ]
+}

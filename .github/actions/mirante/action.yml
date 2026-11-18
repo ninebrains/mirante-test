@@ -1,0 +1,19 @@
+# Template: scripts/build-action.ts copies this file next to the bundled dist/index.mjs.
+name: Mirante
+description: Shows a pull request visually — architecture, layers and logic, before and after.
+inputs:
+  github-token:
+    description: Token to comment on the PR (the workflow's GITHUB_TOKEN is enough).
+    default: ${{ github.token }}
+  viewer-url:
+    description: URL of the hosted viewer (e.g. GitHub Pages). Empty = comment without an interactive link.
+    default: ""
+  dry-run:
+    description: "true = print the comment instead of posting it (local testing)."
+    default: "false"
+outputs:
+  comment-url:
+    description: URL of the PR comment.
+runs:
+  using: node24
+  main: index.mjs
