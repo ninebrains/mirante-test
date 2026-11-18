@@ -2164,9 +2164,9 @@ var require_dispatcher_base = __commonJS({
       }
       close(callback) {
         if (callback === void 0) {
-          return new Promise((resolve, reject) => {
+          return new Promise((resolve2, reject) => {
             this.close((err2, data) => {
-              return err2 ? reject(err2) : resolve(data);
+              return err2 ? reject(err2) : resolve2(data);
             });
           });
         }
@@ -2204,12 +2204,12 @@ var require_dispatcher_base = __commonJS({
           err2 = null;
         }
         if (callback === void 0) {
-          return new Promise((resolve, reject) => {
+          return new Promise((resolve2, reject) => {
             this.destroy(err2, (err3, data) => {
               return err3 ? (
                 /* istanbul ignore next: should never error */
                 reject(err3)
-              ) : resolve(data);
+              ) : resolve2(data);
             });
           });
         }
@@ -4476,8 +4476,8 @@ var require_util2 = __commonJS({
     function createDeferredPromise() {
       let res;
       let rej;
-      const promise2 = new Promise((resolve, reject) => {
-        res = resolve;
+      const promise2 = new Promise((resolve2, reject) => {
+        res = resolve2;
         rej = reject;
       });
       return { promise: promise2, resolve: res, reject: rej };
@@ -6728,12 +6728,12 @@ upgrade: ${upgrade}\r
           cb();
         }
       }
-      const waitForDrain = () => new Promise((resolve, reject) => {
+      const waitForDrain = () => new Promise((resolve2, reject) => {
         assert2(callback === null);
         if (socket[kError]) {
           reject(socket[kError]);
         } else {
-          callback = resolve;
+          callback = resolve2;
         }
       });
       socket.on("close", onDrain).on("drain", onDrain);
@@ -7403,12 +7403,12 @@ var require_client_h2 = __commonJS({
           cb();
         }
       }
-      const waitForDrain = () => new Promise((resolve, reject) => {
+      const waitForDrain = () => new Promise((resolve2, reject) => {
         assert2(callback === null);
         if (socket[kError]) {
           reject(socket[kError]);
         } else {
-          callback = resolve;
+          callback = resolve2;
         }
       });
       h2stream.on("close", onDrain).on("drain", onDrain);
@@ -7887,16 +7887,16 @@ var require_client = __commonJS({
         return this[kNeedDrain] < 2;
       }
       async [kClose]() {
-        return new Promise((resolve) => {
+        return new Promise((resolve2) => {
           if (this[kSize]) {
-            this[kClosedResolve] = resolve;
+            this[kClosedResolve] = resolve2;
           } else {
-            resolve(null);
+            resolve2(null);
           }
         });
       }
       async [kDestroy](err2) {
-        return new Promise((resolve) => {
+        return new Promise((resolve2) => {
           const requests = this[kQueue].splice(this[kPendingIdx]);
           for (let i2 = 0; i2 < requests.length; i2++) {
             const request2 = requests[i2];
@@ -7907,7 +7907,7 @@ var require_client = __commonJS({
               this[kClosedResolve]();
               this[kClosedResolve] = null;
             }
-            resolve(null);
+            resolve2(null);
           };
           if (this[kHTTPContext]) {
             this[kHTTPContext].destroy(err2, callback);
@@ -7958,7 +7958,7 @@ var require_client = __commonJS({
         });
       }
       try {
-        const socket = await new Promise((resolve, reject) => {
+        const socket = await new Promise((resolve2, reject) => {
           client[kConnector]({
             host,
             hostname: hostname3,
@@ -7970,7 +7970,7 @@ var require_client = __commonJS({
             if (err2) {
               reject(err2);
             } else {
-              resolve(socket2);
+              resolve2(socket2);
             }
           });
         });
@@ -8306,8 +8306,8 @@ var require_pool_base = __commonJS({
         if (this[kQueue].isEmpty()) {
           await Promise.all(this[kClients].map((c) => c.close()));
         } else {
-          await new Promise((resolve) => {
-            this[kClosedResolve] = resolve;
+          await new Promise((resolve2) => {
+            this[kClosedResolve] = resolve2;
           });
         }
       }
@@ -9576,7 +9576,7 @@ var require_readable = __commonJS({
         if (this._readableState.closeEmitted) {
           return null;
         }
-        return await new Promise((resolve, reject) => {
+        return await new Promise((resolve2, reject) => {
           if (this[kContentLength] > limit) {
             this.destroy(new AbortError());
           }
@@ -9589,7 +9589,7 @@ var require_readable = __commonJS({
             if (signal?.aborted) {
               reject(signal.reason ?? new AbortError());
             } else {
-              resolve(null);
+              resolve2(null);
             }
           }).on("error", noop3).on("data", function(chunk) {
             limit -= chunk.length;
@@ -9608,7 +9608,7 @@ var require_readable = __commonJS({
     }
     async function consume(stream, type) {
       assert2(!stream[kConsume]);
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve2, reject) => {
         if (isUnusable(stream)) {
           const rState = stream._readableState;
           if (rState.destroyed && rState.closeEmitted === false) {
@@ -9625,7 +9625,7 @@ var require_readable = __commonJS({
             stream[kConsume] = {
               type,
               stream,
-              resolve,
+              resolve: resolve2,
               reject,
               length: 0,
               body: []
@@ -9695,18 +9695,18 @@ var require_readable = __commonJS({
       return buffer;
     }
     function consumeEnd(consume2) {
-      const { type, body: body2, resolve, stream, length } = consume2;
+      const { type, body: body2, resolve: resolve2, stream, length } = consume2;
       try {
         if (type === "text") {
-          resolve(chunksDecode(body2, length));
+          resolve2(chunksDecode(body2, length));
         } else if (type === "json") {
-          resolve(JSON.parse(chunksDecode(body2, length)));
+          resolve2(JSON.parse(chunksDecode(body2, length)));
         } else if (type === "arrayBuffer") {
-          resolve(chunksConcat(body2, length).buffer);
+          resolve2(chunksConcat(body2, length).buffer);
         } else if (type === "blob") {
-          resolve(new Blob(body2, { type: stream[kContentType] }));
+          resolve2(new Blob(body2, { type: stream[kContentType] }));
         } else if (type === "bytes") {
-          resolve(chunksConcat(body2, length));
+          resolve2(chunksConcat(body2, length));
         }
         consumeFinish(consume2);
       } catch (err2) {
@@ -9963,9 +9963,9 @@ var require_api_request = __commonJS({
     };
     function request2(opts, callback) {
       if (callback === void 0) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve2, reject) => {
           request2.call(this, opts, (err2, data) => {
-            return err2 ? reject(err2) : resolve(data);
+            return err2 ? reject(err2) : resolve2(data);
           });
         });
       }
@@ -10188,9 +10188,9 @@ var require_api_stream = __commonJS({
     };
     function stream(opts, factory, callback) {
       if (callback === void 0) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve2, reject) => {
           stream.call(this, opts, factory, (err2, data) => {
-            return err2 ? reject(err2) : resolve(data);
+            return err2 ? reject(err2) : resolve2(data);
           });
         });
       }
@@ -10475,9 +10475,9 @@ var require_api_upgrade = __commonJS({
     };
     function upgrade(opts, callback) {
       if (callback === void 0) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve2, reject) => {
           upgrade.call(this, opts, (err2, data) => {
-            return err2 ? reject(err2) : resolve(data);
+            return err2 ? reject(err2) : resolve2(data);
           });
         });
       }
@@ -10569,9 +10569,9 @@ var require_api_connect = __commonJS({
     };
     function connect(opts, callback) {
       if (callback === void 0) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve2, reject) => {
           connect.call(this, opts, (err2, data) => {
-            return err2 ? reject(err2) : resolve(data);
+            return err2 ? reject(err2) : resolve2(data);
           });
         });
       }
@@ -14434,7 +14434,7 @@ var require_fetch = __commonJS({
       function dispatch({ body: body2 }) {
         const url2 = requestCurrentURL(request2);
         const agent = fetchParams.controller.dispatcher;
-        return new Promise((resolve, reject) => agent.dispatch(
+        return new Promise((resolve2, reject) => agent.dispatch(
           {
             path: url2.pathname + url2.search,
             origin: url2.origin,
@@ -14510,7 +14510,7 @@ var require_fetch = __commonJS({
               }
               this.body = new Readable({ read: resume });
               const onError = this.onError.bind(this);
-              resolve({
+              resolve2({
                 status,
                 statusText,
                 headersList,
@@ -14553,7 +14553,7 @@ var require_fetch = __commonJS({
               for (let i2 = 0; i2 < rawHeaders.length; i2 += 2) {
                 headersList.append(bufferToLowerCasedHeaderName(rawHeaders[i2]), rawHeaders[i2 + 1].toString("latin1"), true);
               }
-              resolve({
+              resolve2({
                 status,
                 statusText: STATUS_CODES[status],
                 headersList,
@@ -17920,7 +17920,7 @@ var require_websocket = __commonJS({
     var { types } = __require("node:util");
     var { ErrorEvent, CloseEvent } = require_events();
     var { SendQueue } = require_sender();
-    var WebSocket = class _WebSocket extends EventTarget {
+    var WebSocket2 = class _WebSocket extends EventTarget {
       #events = {
         open: null,
         error: null,
@@ -18182,11 +18182,11 @@ var require_websocket = __commonJS({
         fireEvent("open", this);
       }
     };
-    WebSocket.CONNECTING = WebSocket.prototype.CONNECTING = states.CONNECTING;
-    WebSocket.OPEN = WebSocket.prototype.OPEN = states.OPEN;
-    WebSocket.CLOSING = WebSocket.prototype.CLOSING = states.CLOSING;
-    WebSocket.CLOSED = WebSocket.prototype.CLOSED = states.CLOSED;
-    Object.defineProperties(WebSocket.prototype, {
+    WebSocket2.CONNECTING = WebSocket2.prototype.CONNECTING = states.CONNECTING;
+    WebSocket2.OPEN = WebSocket2.prototype.OPEN = states.OPEN;
+    WebSocket2.CLOSING = WebSocket2.prototype.CLOSING = states.CLOSING;
+    WebSocket2.CLOSED = WebSocket2.prototype.CLOSED = states.CLOSED;
+    Object.defineProperties(WebSocket2.prototype, {
       CONNECTING: staticPropertyDescriptors,
       OPEN: staticPropertyDescriptors,
       CLOSING: staticPropertyDescriptors,
@@ -18210,7 +18210,7 @@ var require_websocket = __commonJS({
         configurable: true
       }
     });
-    Object.defineProperties(WebSocket, {
+    Object.defineProperties(WebSocket2, {
       CONNECTING: staticPropertyDescriptors,
       OPEN: staticPropertyDescriptors,
       CLOSING: staticPropertyDescriptors,
@@ -18274,7 +18274,7 @@ var require_websocket = __commonJS({
       closeWebSocketConnection(this, code);
     }
     module2.exports = {
-      WebSocket
+      WebSocket: WebSocket2
     };
   }
 });
@@ -18294,8 +18294,8 @@ var require_util8 = __commonJS({
       return true;
     }
     function delay(ms) {
-      return new Promise((resolve) => {
-        setTimeout(resolve, ms).unref();
+      return new Promise((resolve2) => {
+        setTimeout(resolve2, ms).unref();
       });
     }
     module2.exports = {
@@ -19277,11 +19277,11 @@ var require_lib = __commonJS({
     })();
     var __awaiter3 = exports && exports.__awaiter || function(thisArg, _arguments, P, generator) {
       function adopt(value) {
-        return value instanceof P ? value : new P(function(resolve) {
-          resolve(value);
+        return value instanceof P ? value : new P(function(resolve2) {
+          resolve2(value);
         });
       }
-      return new (P || (P = Promise))(function(resolve, reject) {
+      return new (P || (P = Promise))(function(resolve2, reject) {
         function fulfilled(value) {
           try {
             step(generator.next(value));
@@ -19297,7 +19297,7 @@ var require_lib = __commonJS({
           }
         }
         function step(result) {
-          result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+          result.done ? resolve2(result.value) : adopt(result.value).then(fulfilled, rejected);
         }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
       });
@@ -19384,26 +19384,26 @@ var require_lib = __commonJS({
       }
       readBody() {
         return __awaiter3(this, void 0, void 0, function* () {
-          return new Promise((resolve) => __awaiter3(this, void 0, void 0, function* () {
+          return new Promise((resolve2) => __awaiter3(this, void 0, void 0, function* () {
             let output2 = Buffer.alloc(0);
             this.message.on("data", (chunk) => {
               output2 = Buffer.concat([output2, chunk]);
             });
             this.message.on("end", () => {
-              resolve(output2.toString());
+              resolve2(output2.toString());
             });
           }));
         });
       }
       readBodyBuffer() {
         return __awaiter3(this, void 0, void 0, function* () {
-          return new Promise((resolve) => __awaiter3(this, void 0, void 0, function* () {
+          return new Promise((resolve2) => __awaiter3(this, void 0, void 0, function* () {
             const chunks = [];
             this.message.on("data", (chunk) => {
               chunks.push(chunk);
             });
             this.message.on("end", () => {
-              resolve(Buffer.concat(chunks));
+              resolve2(Buffer.concat(chunks));
             });
           }));
         });
@@ -19611,14 +19611,14 @@ var require_lib = __commonJS({
        */
       requestRaw(info3, data) {
         return __awaiter3(this, void 0, void 0, function* () {
-          return new Promise((resolve, reject) => {
+          return new Promise((resolve2, reject) => {
             function callbackForResult(err2, res) {
               if (err2) {
                 reject(err2);
               } else if (!res) {
                 reject(new Error("Unknown error"));
               } else {
-                resolve(res);
+                resolve2(res);
               }
             }
             this.requestRawWithCallback(info3, data, callbackForResult);
@@ -19862,12 +19862,12 @@ var require_lib = __commonJS({
         return __awaiter3(this, void 0, void 0, function* () {
           retryNumber = Math.min(ExponentialBackoffCeiling, retryNumber);
           const ms = ExponentialBackoffTimeSlice * Math.pow(2, retryNumber);
-          return new Promise((resolve) => setTimeout(() => resolve(), ms));
+          return new Promise((resolve2) => setTimeout(() => resolve2(), ms));
         });
       }
       _processResponse(res, options) {
         return __awaiter3(this, void 0, void 0, function* () {
-          return new Promise((resolve, reject) => __awaiter3(this, void 0, void 0, function* () {
+          return new Promise((resolve2, reject) => __awaiter3(this, void 0, void 0, function* () {
             const statusCode = res.message.statusCode || 0;
             const response = {
               statusCode,
@@ -19875,7 +19875,7 @@ var require_lib = __commonJS({
               headers: {}
             };
             if (statusCode === HttpCodes2.NotFound) {
-              resolve(response);
+              resolve2(response);
             }
             function dateTimeDeserializer(key, value) {
               if (typeof value === "string") {
@@ -19914,7 +19914,7 @@ var require_lib = __commonJS({
               err2.result = response.result;
               reject(err2);
             } else {
-              resolve(response);
+              resolve2(response);
             }
           }));
         });
@@ -21570,12 +21570,12 @@ var require_log = __commonJS({
       if (logLevel === "debug")
         console.log(...messages);
     }
-    function warn(logLevel, warning) {
+    function warn(logLevel, warning2) {
       if (logLevel === "debug" || logLevel === "warn") {
         if (typeof node_process.emitWarning === "function")
-          node_process.emitWarning(warning);
+          node_process.emitWarning(warning2);
         else
-          console.warn(warning);
+          console.warn(warning2);
       }
     }
     exports.debug = debug2;
@@ -23888,10 +23888,10 @@ var require_resolve_block_map = __commonJS({
       let offset = bm.offset;
       let commentEnd = null;
       for (const collItem of bm.items) {
-        const { start: start2, key, sep: sep2, value } = collItem;
+        const { start: start2, key, sep: sep3, value } = collItem;
         const keyProps = resolveProps.resolveProps(start2, {
           indicator: "explicit-key-ind",
-          next: key ?? sep2?.[0],
+          next: key ?? sep3?.[0],
           offset,
           onError,
           parentIndent: bm.indent,
@@ -23905,7 +23905,7 @@ var require_resolve_block_map = __commonJS({
             else if ("indent" in key && key.indent !== bm.indent)
               onError(offset, "BAD_INDENT", startColMsg);
           }
-          if (!keyProps.anchor && !keyProps.tag && !sep2) {
+          if (!keyProps.anchor && !keyProps.tag && !sep3) {
             commentEnd = keyProps.end;
             if (keyProps.comment) {
               if (map2.comment)
@@ -23929,7 +23929,7 @@ var require_resolve_block_map = __commonJS({
         ctx.atKey = false;
         if (utilMapIncludes.mapIncludes(ctx, map2.items, keyNode))
           onError(keyStart, "DUPLICATE_KEY", "Map keys must be unique");
-        const valueProps = resolveProps.resolveProps(sep2 ?? [], {
+        const valueProps = resolveProps.resolveProps(sep3 ?? [], {
           indicator: "map-value-ind",
           next: value,
           offset: keyNode.range[2],
@@ -23945,7 +23945,7 @@ var require_resolve_block_map = __commonJS({
             if (ctx.options.strict && keyProps.start < valueProps.found.offset - 1024)
               onError(keyNode.range, "KEY_OVER_1024_CHARS", "The : indicator must be at most 1024 chars after the start of an implicit block mapping key");
           }
-          const valueNode = value ? composeNode(ctx, value, valueProps, onError) : composeEmptyNode(ctx, offset, sep2, null, valueProps, onError);
+          const valueNode = value ? composeNode(ctx, value, valueProps, onError) : composeEmptyNode(ctx, offset, sep3, null, valueProps, onError);
           if (ctx.schema.compat)
             utilFlowIndentCheck.flowIndentCheck(bm.indent, value, onError);
           offset = valueNode.range[2];
@@ -24036,7 +24036,7 @@ var require_resolve_end = __commonJS({
       let comment = "";
       if (end) {
         let hasSpace = false;
-        let sep2 = "";
+        let sep3 = "";
         for (const token of end) {
           const { source, type } = token;
           switch (type) {
@@ -24050,13 +24050,13 @@ var require_resolve_end = __commonJS({
               if (!comment)
                 comment = cb;
               else
-                comment += sep2 + cb;
-              sep2 = "";
+                comment += sep3 + cb;
+              sep3 = "";
               break;
             }
             case "newline":
               if (comment)
-                sep2 += source;
+                sep3 += source;
               hasSpace = true;
               break;
             default:
@@ -24099,18 +24099,18 @@ var require_resolve_flow_collection = __commonJS({
       let offset = fc.offset + fc.start.source.length;
       for (let i2 = 0; i2 < fc.items.length; ++i2) {
         const collItem = fc.items[i2];
-        const { start: start2, key, sep: sep2, value } = collItem;
+        const { start: start2, key, sep: sep3, value } = collItem;
         const props = resolveProps.resolveProps(start2, {
           flow: fcName,
           indicator: "explicit-key-ind",
-          next: key ?? sep2?.[0],
+          next: key ?? sep3?.[0],
           offset,
           onError,
           parentIndent: fc.indent,
           startOnNewline: false
         });
         if (!props.found) {
-          if (!props.anchor && !props.tag && !sep2 && !value) {
+          if (!props.anchor && !props.tag && !sep3 && !value) {
             if (i2 === 0 && props.comma)
               onError(props.comma, "UNEXPECTED_TOKEN", `Unexpected , in ${fcName}`);
             else if (i2 < fc.items.length - 1)
@@ -24164,8 +24164,8 @@ var require_resolve_flow_collection = __commonJS({
             }
           }
         }
-        if (!isMap && !sep2 && !props.found) {
-          const valueNode = value ? composeNode(ctx, value, props, onError) : composeEmptyNode(ctx, props.end, sep2, null, props, onError);
+        if (!isMap && !sep3 && !props.found) {
+          const valueNode = value ? composeNode(ctx, value, props, onError) : composeEmptyNode(ctx, props.end, sep3, null, props, onError);
           coll.items.push(valueNode);
           offset = valueNode.range[2];
           if (isBlock(value))
@@ -24177,7 +24177,7 @@ var require_resolve_flow_collection = __commonJS({
           if (isBlock(key))
             onError(keyNode.range, "BLOCK_IN_FLOW", blockMsg);
           ctx.atKey = false;
-          const valueProps = resolveProps.resolveProps(sep2 ?? [], {
+          const valueProps = resolveProps.resolveProps(sep3 ?? [], {
             flow: fcName,
             indicator: "map-value-ind",
             next: value,
@@ -24188,8 +24188,8 @@ var require_resolve_flow_collection = __commonJS({
           });
           if (valueProps.found) {
             if (!isMap && !props.found && ctx.options.strict) {
-              if (sep2)
-                for (const st of sep2) {
+              if (sep3)
+                for (const st of sep3) {
                   if (st === valueProps.found)
                     break;
                   if (st.type === "newline") {
@@ -24206,7 +24206,7 @@ var require_resolve_flow_collection = __commonJS({
             else
               onError(valueProps.start, "MISSING_CHAR", `Missing , or : between ${fcName} items`);
           }
-          const valueNode = value ? composeNode(ctx, value, valueProps, onError) : valueProps.found ? composeEmptyNode(ctx, valueProps.end, sep2, null, valueProps, onError) : null;
+          const valueNode = value ? composeNode(ctx, value, valueProps, onError) : valueProps.found ? composeEmptyNode(ctx, valueProps.end, sep3, null, valueProps, onError) : null;
           if (valueNode) {
             if (isBlock(value))
               onError(valueNode.range, "BLOCK_IN_FLOW", blockMsg);
@@ -24386,7 +24386,7 @@ var require_resolve_block_scalar = __commonJS({
           chompStart = i2 + 1;
       }
       let value = "";
-      let sep2 = "";
+      let sep3 = "";
       let prevMoreIndented = false;
       for (let i2 = 0; i2 < contentStart; ++i2)
         value += lines[i2][0].slice(trimIndent) + "\n";
@@ -24403,24 +24403,24 @@ var require_resolve_block_scalar = __commonJS({
           indent = "";
         }
         if (type === Scalar.Scalar.BLOCK_LITERAL) {
-          value += sep2 + indent.slice(trimIndent) + content;
-          sep2 = "\n";
+          value += sep3 + indent.slice(trimIndent) + content;
+          sep3 = "\n";
         } else if (indent.length > trimIndent || content[0] === "	") {
-          if (sep2 === " ")
-            sep2 = "\n";
-          else if (!prevMoreIndented && sep2 === "\n")
-            sep2 = "\n\n";
-          value += sep2 + indent.slice(trimIndent) + content;
-          sep2 = "\n";
+          if (sep3 === " ")
+            sep3 = "\n";
+          else if (!prevMoreIndented && sep3 === "\n")
+            sep3 = "\n\n";
+          value += sep3 + indent.slice(trimIndent) + content;
+          sep3 = "\n";
           prevMoreIndented = true;
         } else if (content === "") {
-          if (sep2 === "\n")
+          if (sep3 === "\n")
             value += "\n";
           else
-            sep2 = "\n";
+            sep3 = "\n";
         } else {
-          value += sep2 + content;
-          sep2 = " ";
+          value += sep3 + content;
+          sep3 = " ";
           prevMoreIndented = false;
         }
       }
@@ -24603,25 +24603,25 @@ var require_resolve_flow_scalar = __commonJS({
         trimBoth = /^[ \t]+|[ \t]+$/g;
       }
       let res = match[1].replace(trimEnd, "");
-      let sep2 = " ";
+      let sep3 = " ";
       let pos = line.lastIndex;
       while (match = line.exec(source)) {
         const lm = match[1].replace(trimBoth, "");
         if (lm === "") {
-          if (sep2 === "\n")
-            res += sep2;
+          if (sep3 === "\n")
+            res += sep3;
           else
-            sep2 = "\n";
+            sep3 = "\n";
         } else {
-          res += sep2 + lm;
-          sep2 = " ";
+          res += sep3 + lm;
+          sep3 = " ";
         }
         pos = line.lastIndex;
       }
       const last = /[ \t]*(.*)/sy;
       last.lastIndex = pos;
       match = last.exec(source);
-      return res + sep2 + (match?.[1] ?? "");
+      return res + sep3 + (match?.[1] ?? "");
     }
     function doubleQuotedValue(source, onError) {
       let res = "";
@@ -25045,9 +25045,9 @@ var require_composer = __commonJS({
         this.prelude = [];
         this.errors = [];
         this.warnings = [];
-        this.onError = (source, code, message, warning) => {
+        this.onError = (source, code, message, warning2) => {
           const pos = getErrorPos(source);
-          if (warning)
+          if (warning2)
             this.warnings.push(new errors.YAMLWarning(pos, code, message));
           else
             this.errors.push(new errors.YAMLParseError(pos, code, message));
@@ -25120,10 +25120,10 @@ ${cb}` : comment;
           console.dir(token, { depth: null });
         switch (token.type) {
           case "directive":
-            this.directives.add(token.source, (offset, message, warning) => {
+            this.directives.add(token.source, (offset, message, warning2) => {
               const pos = getErrorPos(token);
               pos[0] += offset;
-              this.onError(pos, "BAD_DIRECTIVE", message, warning);
+              this.onError(pos, "BAD_DIRECTIVE", message, warning2);
             });
             this.prelude.push(token.source);
             this.atDirectives = true;
@@ -25431,14 +25431,14 @@ var require_cst_stringify = __commonJS({
         }
       }
     }
-    function stringifyItem({ start: start2, key, sep: sep2, value }) {
+    function stringifyItem({ start: start2, key, sep: sep3, value }) {
       let res = "";
       for (const st of start2)
         res += st.source;
       if (key)
         res += stringifyToken(key);
-      if (sep2)
-        for (const st of sep2)
+      if (sep3)
+        for (const st of sep3)
           res += st.source;
       if (value)
         res += stringifyToken(value);
@@ -26605,18 +26605,18 @@ var require_parser = __commonJS({
         if (this.type === "map-value-ind") {
           const prev = getPrevProps(this.peek(2));
           const start2 = getFirstKeyStartProps(prev);
-          let sep2;
+          let sep3;
           if (scalar.end) {
-            sep2 = scalar.end;
-            sep2.push(this.sourceToken);
+            sep3 = scalar.end;
+            sep3.push(this.sourceToken);
             delete scalar.end;
           } else
-            sep2 = [this.sourceToken];
+            sep3 = [this.sourceToken];
           const map2 = {
             type: "block-map",
             offset: scalar.offset,
             indent: scalar.indent,
-            items: [{ start: start2, key: scalar, sep: sep2 }]
+            items: [{ start: start2, key: scalar, sep: sep3 }]
           };
           this.onKeyLine = true;
           this.stack[this.stack.length - 1] = map2;
@@ -26769,15 +26769,15 @@ var require_parser = __commonJS({
                 } else if (isFlowToken(it.key) && !includesToken(it.sep, "newline")) {
                   const start3 = getFirstKeyStartProps(it.start);
                   const key = it.key;
-                  const sep2 = it.sep;
-                  sep2.push(this.sourceToken);
+                  const sep3 = it.sep;
+                  sep3.push(this.sourceToken);
                   delete it.key;
                   delete it.sep;
                   this.stack.push({
                     type: "block-map",
                     offset: this.offset,
                     indent: this.indent,
-                    items: [{ start: start3, key, sep: sep2 }]
+                    items: [{ start: start3, key, sep: sep3 }]
                   });
                 } else if (start2.length > 0) {
                   it.sep = it.sep.concat(start2, this.sourceToken);
@@ -26971,13 +26971,13 @@ var require_parser = __commonJS({
             const prev = getPrevProps(parent);
             const start2 = getFirstKeyStartProps(prev);
             fixFlowSeqItems(fc);
-            const sep2 = fc.end.splice(1, fc.end.length);
-            sep2.push(this.sourceToken);
+            const sep3 = fc.end.splice(1, fc.end.length);
+            sep3.push(this.sourceToken);
             const map2 = {
               type: "block-map",
               offset: fc.offset,
               indent: fc.indent,
-              items: [{ start: start2, key: fc, sep: sep2 }]
+              items: [{ start: start2, key: fc, sep: sep3 }]
             };
             this.onKeyLine = true;
             this.stack[this.stack.length - 1] = map2;
@@ -27165,7 +27165,7 @@ var require_public_api = __commonJS({
       const doc = parseDocument(src, options);
       if (!doc)
         return null;
-      doc.warnings.forEach((warning) => log.warn(doc.options.logLevel, warning));
+      doc.warnings.forEach((warning2) => log.warn(doc.options.logLevel, warning2));
       if (doc.errors.length > 0) {
         if (doc.options.logLevel !== "silent")
           throw doc.errors[0];
@@ -27877,11 +27877,11 @@ import { EOL as EOL3 } from "os";
 import { constants, promises } from "fs";
 var __awaiter = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
-    return value instanceof P ? value : new P(function(resolve) {
-      resolve(value);
+    return value instanceof P ? value : new P(function(resolve2) {
+      resolve2(value);
     });
   }
-  return new (P || (P = Promise))(function(resolve, reject) {
+  return new (P || (P = Promise))(function(resolve2, reject) {
     function fulfilled(value) {
       try {
         step(generator.next(value));
@@ -27897,7 +27897,7 @@ var __awaiter = function(thisArg, _arguments, P, generator) {
       }
     }
     function step(result) {
-      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+      result.done ? resolve2(result.value) : adopt(result.value).then(fulfilled, rejected);
     }
     step((generator = generator.apply(thisArg, _arguments || [])).next());
   });
@@ -28203,6 +28203,9 @@ function setFailed(message) {
 function error(message, properties = {}) {
   issueCommand("error", toCommandProperties(properties), message instanceof Error ? message.toString() : message);
 }
+function warning(message, properties = {}) {
+  issueCommand("warning", toCommandProperties(properties), message instanceof Error ? message.toString() : message);
+}
 function info2(message) {
   process.stdout.write(message + os4.EOL);
 }
@@ -28263,11 +28266,11 @@ var httpClient = __toESM(require_lib(), 1);
 var import_undici2 = __toESM(require_undici(), 1);
 var __awaiter2 = function(thisArg, _arguments, P, generator) {
   function adopt(value) {
-    return value instanceof P ? value : new P(function(resolve) {
-      resolve(value);
+    return value instanceof P ? value : new P(function(resolve2) {
+      resolve2(value);
     });
   }
-  return new (P || (P = Promise))(function(resolve, reject) {
+  return new (P || (P = Promise))(function(resolve2, reject) {
     function fulfilled(value) {
       try {
         step(generator.next(value));
@@ -28283,7 +28286,7 @@ var __awaiter2 = function(thisArg, _arguments, P, generator) {
       }
     }
     function step(result) {
-      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+      result.done ? resolve2(result.value) : adopt(result.value).then(fulfilled, rejected);
     }
     step((generator = generator.apply(thisArg, _arguments || [])).next());
   });
@@ -33991,13 +33994,13 @@ async function Module2(moduleArg = {}) {
       }
       readAsync = /* @__PURE__ */ __name(async (url2) => {
         if (isFileURI(url2)) {
-          return new Promise((resolve, reject) => {
+          return new Promise((resolve2, reject) => {
             var xhr = new XMLHttpRequest();
             xhr.open("GET", url2, true);
             xhr.responseType = "arraybuffer";
             xhr.onload = () => {
               if (xhr.status == 200 || xhr.status == 0 && xhr.response) {
-                resolve(xhr.response);
+                resolve2(xhr.response);
                 return;
               }
               reject(xhr.status);
@@ -34193,9 +34196,9 @@ async function Module2(moduleArg = {}) {
     __name(receiveInstantiationResult, "receiveInstantiationResult");
     var info22 = getWasmImports();
     if (Module["instantiateWasm"]) {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve2, reject) => {
         Module["instantiateWasm"](info22, (mod, inst) => {
-          resolve(receiveInstance(mod, inst));
+          resolve2(receiveInstance(mod, inst));
         });
       });
     }
@@ -35528,8 +35531,8 @@ async function Module2(moduleArg = {}) {
   if (runtimeInitialized) {
     moduleRtn = Module;
   } else {
-    moduleRtn = new Promise((resolve, reject) => {
-      readyPromiseResolve = resolve;
+    moduleRtn = new Promise((resolve2, reject) => {
+      readyPromiseResolve = resolve2;
       readyPromiseReject = reject;
     });
   }
@@ -41482,7 +41485,7 @@ var recursive = /* @__PURE__ */ new WeakMap();
 var NONE = 0;
 var ASSUMED = 1;
 var PROVEN = 2;
-function isRecursive(inst, stack, resolve) {
+function isRecursive(inst, stack, resolve2) {
   const cached2 = recursive.get(inst);
   if (cached2 !== void 0)
     return cached2 ? PROVEN : NONE;
@@ -41492,7 +41495,7 @@ function isRecursive(inst, stack, resolve) {
   let result = NONE;
   const check2 = (child) => {
     if (result !== PROVEN && child?._zod) {
-      const answer = isRecursive(child, stack, resolve);
+      const answer = isRecursive(child, stack, resolve2);
       if (answer > result)
         result = answer;
     }
@@ -41503,7 +41506,7 @@ function isRecursive(inst, stack, resolve) {
       const desc = Object.getOwnPropertyDescriptor(sh, key);
       if (spread && !desc.enumerable)
         continue;
-      const child = desc.get ? ASSUMED : desc.value?._zod ? isRecursive(desc.value, stack, resolve) : NONE;
+      const child = desc.get ? ASSUMED : desc.value?._zod ? isRecursive(desc.value, stack, resolve2) : NONE;
       if (child > answer)
         answer = child;
     }
@@ -41567,7 +41570,7 @@ function isRecursive(inst, stack, resolve) {
       break;
     // `$ZodLazy` caches its inner on the def, so a resolved edge is followed exactly
     case "lazy": {
-      const inner = def._cachedInner ?? (resolve ? inst._zod.innerType : void 0);
+      const inner = def._cachedInner ?? (resolve2 ? inst._zod.innerType : void 0);
       merge3(inner ? isRecursive(inner, stack, false) : ASSUMED);
       break;
     }
@@ -57010,7 +57013,7 @@ function linkGraph(allFacts) {
       const target = `${classPath}#${className}${members2.length ? `.${members2[0]}` : ""}`;
       return nodes.has(target) ? { ok: true, to: target, symbol: symbol2 } : { ok: false, reason: "target-not-found" };
     };
-    const resolve = (call, callee, depth = 0) => {
+    const resolve2 = (call, callee, depth = 0) => {
       switch (callee.kind) {
         case "complex":
           return { ok: false, reason: "complex-expression" };
@@ -57046,7 +57049,7 @@ function linkGraph(allFacts) {
           }
           const moduleVar = facts.moduleVars[root];
           if (moduleVar && moduleVar.kind !== "complex" && moduleVar.kind !== "this" && depth === 0) {
-            const origin = resolve(call, { kind: "name", root: moduleVar.root, members: moduleVar.members }, depth + 1);
+            const origin = resolve2(call, { kind: "name", root: moduleVar.root, members: moduleVar.members }, depth + 1);
             if (!origin.ok) return origin;
             const symbol2 = moduleVar.kind === "new" ? [moduleVar.root, ...members2].join(".") : [root, ...members2].join(".");
             if (origin.to.startsWith("module:")) return { ok: true, to: origin.to, symbol: symbol2 };
@@ -57066,7 +57069,7 @@ function linkGraph(allFacts) {
     ];
     for (const [kind, list, prefix] of groups) {
       for (const fact of list) {
-        const r = resolve(fact, fact.callee);
+        const r = resolve2(fact, fact.callee);
         if (r.ok) {
           edges.push({ kind, from: fact.from, to: r.to, symbol: r.symbol, line: fact.line, detail: fact.detail });
         } else {
@@ -58180,7 +58183,7 @@ function sceneToMermaid(scene) {
   for (const n of nodes) lines.push(`  style ${ids.get(n.id)} ${STATUS_STYLE[n.status]}`);
   return lines.join("\n");
 }
-function buildComment({ scene, viewerLink: viewerLink2, delivery }) {
+function buildComment({ scene, viewerLink: viewerLink2, delivery, imageUrl }) {
   const s = scene.summary.stats;
   const short = (sha) => sha.slice(0, 7);
   const parts2 = [
@@ -58194,11 +58197,13 @@ function buildComment({ scene, viewerLink: viewerLink2, delivery }) {
   if (scene.concepts.length) {
     parts2.push("", scene.concepts.map((c) => `\`${c.label}\``).join(" \xB7 "));
   }
-  parts2.push("", "### Architecture", "", "```mermaid", sceneToMermaid(scene), "```");
-  parts2.push(
-    "",
-    `**[\u25B6 Open the interactive view](${viewerLink2})**: before/after, three zoom levels, code, and the Play of each request.`
-  );
+  if (imageUrl) {
+    parts2.push("", `[![Mirante: what this PR changes \u2014 click to open the interactive view](${imageUrl})](${viewerLink2})`);
+    parts2.push("", `**[\u25B6 Open the interactive view](${viewerLink2})**: before/after, three zoom levels, code, and the Play of each request.`);
+  } else {
+    parts2.push("", "### Architecture", "", "```mermaid", sceneToMermaid(scene), "```");
+    parts2.push("", `**[\u25B6 Open the interactive view](${viewerLink2})**: before/after, three zoom levels, code, and the Play of each request.`);
+  }
   const questions = scene.reviewQuestions;
   if (questions.length) {
     parts2.push("", "<details><summary><b>Review questions</b> (" + questions.length + ")</summary>", "");
@@ -58210,6 +58215,149 @@ function buildComment({ scene, viewerLink: viewerLink2, delivery }) {
     `<sub>${short(scene.envelope.base.commit)} \u2192 ${short(scene.envelope.head.commit)} \xB7 scene ${delivery === "url" ? "inside the link" : "on branch mirante-scenes"} \xB7 timings in the Play are simulated \xB7 updated on every push</sub>`
   );
   return parts2.join("\n");
+}
+
+// packages/action/src/main.ts
+import { writeFileSync } from "node:fs";
+import { join as join3 } from "node:path";
+
+// packages/action/src/capture.ts
+var import_lz_string = __toESM(require_lz_string(), 1);
+import { spawn } from "node:child_process";
+import { existsSync as existsSync3, mkdtempSync, readFileSync as readFileSync2, rmSync, statSync } from "node:fs";
+import { createServer } from "node:http";
+import { tmpdir } from "node:os";
+import { extname, join as join2, normalize, resolve, sep as sep2 } from "node:path";
+var CHROME_CANDIDATES = [
+  "/usr/bin/google-chrome",
+  "/usr/bin/google-chrome-stable",
+  "/usr/bin/chromium",
+  "/usr/bin/chromium-browser",
+  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+];
+function findChrome(env = process.env) {
+  if (env.CHROME_PATH && existsSync3(env.CHROME_PATH)) return env.CHROME_PATH;
+  return CHROME_CANDIDATES.find((p) => existsSync3(p)) ?? null;
+}
+var MIME = {
+  ".html": "text/html; charset=utf-8",
+  ".js": "text/javascript",
+  ".css": "text/css",
+  ".json": "application/json",
+  ".svg": "image/svg+xml",
+  ".png": "image/png"
+};
+function serveStatic(root) {
+  const base = resolve(root);
+  const server = createServer((req, res) => {
+    const path = decodeURIComponent(new URL(req.url ?? "/", "http://x").pathname);
+    let file2 = normalize(join2(base, path));
+    if (file2 !== base && !file2.startsWith(base + sep2)) return void res.writeHead(404).end();
+    if (existsSync3(file2) && statSync(file2).isDirectory()) file2 = join2(file2, "index.html");
+    if (!existsSync3(file2)) return void res.writeHead(404).end();
+    res.writeHead(200, { "Content-Type": MIME[extname(file2)] ?? "application/octet-stream" }).end(readFileSync2(file2));
+  });
+  return new Promise((ok) => server.listen(0, "127.0.0.1", () => ok({ server, port: server.address().port })));
+}
+var Cdp = class _Cdp {
+  #ws;
+  #id = 0;
+  #pending = /* @__PURE__ */ new Map();
+  constructor(ws) {
+    this.#ws = ws;
+    ws.addEventListener("message", (event) => {
+      const msg = JSON.parse(String(event.data));
+      const waiter = msg.id ? this.#pending.get(msg.id) : void 0;
+      if (!waiter) return;
+      this.#pending.delete(msg.id);
+      if (msg.error) waiter.fail(new Error(`CDP: ${msg.error.message}`));
+      else waiter.ok(msg.result);
+    });
+  }
+  static async connect(url2) {
+    const ws = new WebSocket(url2);
+    await new Promise((ok, fail) => {
+      ws.addEventListener("open", ok, { once: true });
+      ws.addEventListener("error", () => fail(new Error("CDP: could not connect")), { once: true });
+    });
+    return new _Cdp(ws);
+  }
+  send(method, params = {}, sessionId) {
+    const id = ++this.#id;
+    return new Promise((ok, fail) => {
+      this.#pending.set(id, { ok, fail });
+      this.#ws.send(JSON.stringify({ id, method, params, sessionId }));
+    });
+  }
+  close() {
+    this.#ws.close();
+  }
+};
+function launchChrome(chromePath, profile) {
+  const args2 = [
+    "--headless=new",
+    "--disable-gpu",
+    "--hide-scrollbars",
+    "--no-first-run",
+    "--remote-debugging-port=0",
+    `--user-data-dir=${profile}`,
+    // Linux CI runners restrict the user namespaces Chrome's sandbox needs. The page is our own viewer.
+    ...process.platform === "linux" ? ["--no-sandbox"] : [],
+    "about:blank"
+  ];
+  const child = spawn(chromePath, args2, { stdio: ["ignore", "ignore", "pipe"] });
+  const wsUrl = new Promise((ok, fail) => {
+    let err2 = "";
+    const timer = setTimeout(() => fail(new Error(`Chrome did not start: ${err2.slice(-300)}`)), 2e4);
+    child.stderr.on("data", (chunk) => {
+      err2 += chunk.toString();
+      const match = /DevTools listening on (ws:\/\/\S+)/.exec(err2);
+      if (match) {
+        clearTimeout(timer);
+        ok(match[1]);
+      }
+    });
+    child.on("exit", (code) => fail(new Error(`Chrome exited (${code}): ${err2.slice(-300)}`)));
+  });
+  return { child, wsUrl };
+}
+async function captureView(options) {
+  const { width = 1280, height = 600 } = options;
+  const { server, port } = await serveStatic(options.viewerDir);
+  const profile = mkdtempSync(join2(tmpdir(), "mirante-chrome-"));
+  const { child, wsUrl } = launchChrome(options.chromePath, profile);
+  let cdp;
+  try {
+    cdp = await Cdp.connect(await wsUrl);
+    const { targetId } = await cdp.send("Target.createTarget", { url: "about:blank" });
+    const { sessionId } = await cdp.send("Target.attachToTarget", { targetId, flatten: true });
+    const page = (method, params = {}) => cdp.send(method, params, sessionId);
+    await page("Emulation.setDeviceMetricsOverride", { width, height, deviceScaleFactor: 2, mobile: false });
+    await page("Emulation.setEmulatedMedia", { features: [{ name: "prefers-color-scheme", value: "light" }] });
+    const hash2 = (0, import_lz_string.compressToEncodedURIComponent)(JSON.stringify(options.scene));
+    await page("Page.navigate", { url: `http://127.0.0.1:${port}/?capture=1#scene=${hash2}` });
+    const deadline = Date.now() + 3e4;
+    for (; ; ) {
+      const { result } = await page("Runtime.evaluate", {
+        expression: "({ ready: document.body?.dataset.captureReady === '1', error: document.querySelector('.error')?.textContent ?? null })",
+        returnByValue: true
+      });
+      if (result.value?.error) throw new Error(`viewer: ${result.value.error}`);
+      if (result.value?.ready) break;
+      if (Date.now() > deadline) throw new Error("viewer did not finish drawing in 30 s");
+      await new Promise((r) => setTimeout(r, 150));
+    }
+    const shot = await page("Page.captureScreenshot", { format: "png" });
+    return Buffer.from(shot.data, "base64");
+  } finally {
+    cdp?.close();
+    child.kill();
+    server.close();
+    try {
+      rmSync(profile, { recursive: true, force: true, maxRetries: 3, retryDelay: 200 });
+    } catch {
+    }
+  }
 }
 
 // packages/action/src/github.ts
@@ -58227,7 +58375,7 @@ async function upsertComment(api, where2, body2) {
   return { url: res.data.html_url, updated: false };
 }
 var SCENES_BRANCH = "mirante-scenes";
-async function publishSceneFile(api, where2, path, content) {
+async function publishFiles(api, where2, files) {
   const ref = `heads/${SCENES_BRANCH}`;
   let parent = null;
   let baseTree;
@@ -58237,20 +58385,26 @@ async function publishSceneFile(api, where2, path, content) {
   } catch (error63) {
     if (error63.status !== 404) throw error63;
   }
-  const tree = await api.git.createTree({ ...where2, tree: [{ path, mode: "100644", type: "blob", content }], base_tree: baseTree });
-  const commit = await api.git.createCommit({ ...where2, message: `mirante: ${path}`, tree: tree.data.sha, parents: parent ? [parent] : [] });
+  const tree = [];
+  for (const f of files) {
+    const blob = await api.git.createBlob({ ...where2, content: Buffer.from(f.content).toString("base64"), encoding: "base64" });
+    tree.push({ path: f.path, mode: "100644", type: "blob", sha: blob.data.sha });
+  }
+  const created = await api.git.createTree({ ...where2, tree, base_tree: baseTree });
+  const message = `mirante: ${files.map((f) => f.path).join(", ")}`;
+  const commit = await api.git.createCommit({ ...where2, message, tree: created.data.sha, parents: parent ? [parent] : [] });
   if (parent) await api.git.updateRef({ ...where2, ref, sha: commit.data.sha });
   else await api.git.createRef({ ...where2, ref: `refs/${ref}`, sha: commit.data.sha });
   return commit.data.sha;
 }
 
 // packages/action/src/link.ts
-var import_lz_string = __toESM(require_lz_string(), 1);
+var import_lz_string2 = __toESM(require_lz_string(), 1);
 var MAX_LINK_LENGTH = 4e4;
 async function viewerLink(input2) {
   const json2 = JSON.stringify(input2.scene);
   const base = input2.viewerUrl.replace(/#.*$/, "");
-  const inline = `${base}#scene=${(0, import_lz_string.compressToEncodedURIComponent)(json2)}`;
+  const inline = `${base}#scene=${(0, import_lz_string2.compressToEncodedURIComponent)(json2)}`;
   if (base && inline.length <= MAX_LINK_LENGTH) return { href: inline, delivery: "url" };
   const stored = await input2.publish(json2);
   if (base && !input2.isPrivate) return { href: `${base}#src=${encodeURIComponent(stored.raw)}`, delivery: "branch" };
@@ -58258,8 +58412,9 @@ async function viewerLink(input2) {
 }
 
 // packages/action/src/main.ts
+var here = dirname(fileURLToPath2(import.meta.url));
 async function run2() {
-  process.env.MIRANTE_WASM_DIR ??= dirname(fileURLToPath2(import.meta.url));
+  process.env.MIRANTE_WASM_DIR ??= here;
   const pr = context2.payload.pull_request;
   if (!pr) {
     setFailed("Mirante runs on pull_request events (no pull request in this event).");
@@ -58278,9 +58433,25 @@ async function run2() {
   scene.envelope.head.ref = pr.head.ref;
   scene.summary.title = `${pr.base.ref} \u2192 ${pr.head.ref}`;
   info2(`scene ${baseSha.slice(0, 7)} \u2192 ${headSha.slice(0, 7)}: ${scene.summary.text}`);
+  const takePicture = async () => {
+    if (getInput("screenshot") === "false" || isPrivate) return null;
+    const chromePath = findChrome();
+    if (!chromePath) {
+      warning("No Chrome found: the comment will use the Mermaid diagram instead of a picture.");
+      return null;
+    }
+    try {
+      return await captureView({ scene, chromePath, viewerDir: join3(here, "viewer") });
+    } catch (error63) {
+      warning(`Screenshot failed, using the Mermaid diagram: ${error63 instanceof Error ? error63.message : error63}`);
+      return null;
+    }
+  };
   if (getInput("dry-run") === "true") {
     const link2 = await viewerLink({ scene, viewerUrl, isPrivate, publish: async () => ({ raw: "(raw url)", blob: "(blob url)" }) });
-    console.log(buildComment({ scene, viewerLink: link2.href, delivery: link2.delivery }));
+    const png2 = await takePicture();
+    if (png2) writeFileSync("mirante-view.png", png2);
+    console.log(buildComment({ scene, viewerLink: link2.href, delivery: link2.delivery, imageUrl: png2 ? "mirante-view.png" : null }));
     return;
   }
   const api = getOctokit(getInput("github-token", { required: true })).rest;
@@ -58290,14 +58461,21 @@ async function run2() {
     isPrivate,
     publish: async (json2) => {
       const path = `pr-${pr.number}/${headSha}.json`;
-      await publishSceneFile(api, { owner, repo }, path, json2);
+      await publishFiles(api, { owner, repo }, [{ path, content: json2 }]);
       return {
         raw: `https://raw.githubusercontent.com/${owner}/${repo}/${SCENES_BRANCH}/${path}`,
         blob: `https://github.com/${owner}/${repo}/blob/${SCENES_BRANCH}/${path}`
       };
     }
   });
-  const body2 = buildComment({ scene, viewerLink: link.href, delivery: link.delivery });
+  const png = await takePicture();
+  let imageUrl = null;
+  if (png) {
+    const path = `pr-${pr.number}/${headSha}.png`;
+    const commit = await publishFiles(api, { owner, repo }, [{ path, content: png }]);
+    imageUrl = `https://raw.githubusercontent.com/${owner}/${repo}/${commit}/${path}`;
+  }
+  const body2 = buildComment({ scene, viewerLink: link.href, delivery: link.delivery, imageUrl });
   const comment = await upsertComment(api, { owner, repo, pr: pr.number }, body2);
   info2(`${comment.updated ? "updated" : "created"} ${comment.url}`);
   setOutput("comment-url", comment.url);

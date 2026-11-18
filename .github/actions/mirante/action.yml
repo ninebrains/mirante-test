@@ -8,6 +8,9 @@ inputs:
   viewer-url:
     description: URL of the hosted viewer (e.g. GitHub Pages). Empty = comment without an interactive link.
     default: ""
+  screenshot:
+    description: "false = skip the picture of the interactive view (the comment shows a Mermaid diagram)."
+    default: "true"
   dry-run:
     description: "true = print the comment instead of posting it (local testing)."
     default: "false"
